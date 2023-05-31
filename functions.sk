@@ -1,6 +1,7 @@
 options:
 	version: 0.1
 	enchantingMenuScreen: Enchanting
+	enableQuickWorkbench: true
 
 command /newenchant:
 	permission: op
@@ -8,11 +9,12 @@ command /newenchant:
 		enchantingTableUI(player, 1, 0)
 
 on left click with crafting table:
+	"{@enableQuickWorkbench}" = "true"
 	open workbench view to player
 		
 on right click on enchanting table:
 	cancel event
-	loop all blocks in radius 3 around player:
+	loop all blocks in radius 2.5 around event-block:
 		if loop-block contains bookshelf:
 			add 1 to {_power}
 	enchantingTableUI(player, 1, {_power})
@@ -23,7 +25,7 @@ function enchantingTableUI(p: player, n: number, power: number):
 	wait 1 tick
 	set slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 17, 18, 20, 26, 27, 28, 29, 35, 36, 38, 44, 45, 46, 47, 48, 49, 50, 51, 52, and 53 of {_p}'s current inventory to gray stained glass pane named "&r"
 	set slot 19 of {_p}'s current inventory to cyan stained glass pane named "&fPlace Item Above" with lore "&7Accepted Items:%nl%&9Armor, Swords, Bows,%nL%&9Tools, Shield, Fishing Rod,%nl%&9Elytra, Shears, Trident,%nl%&9Compass, Flint and Steel"
-	set slot 37 of {_p}'s current inventory to bookshelf named "&dEnchanting Power: &f%{_power}+0%" with lore "%nl%&7Higher number, more%nl%&7enchantments avaliable.%nl%%nl%&8HINT: You need to%nl%&8be around bookshelves!"
+	set slot 37 of {_p}'s current inventory to bookshelf named "&dEnchanting Power: &f%{_power}+0%" with lore "%nl%&7Higher number, more%nl%&7enchantments avaliable.%nl%%nl%&8HINT: Bookshelves should%nl%&8be surrounding this table!"
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to gray dye named "&cNo Item" with lore "&7Place an item to reveal contents.%nl%&7Or re-place item in slot."
 	{_n} = 2:
 		set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to barrier named "&cInvalid Item" with lore "&7This item cannot be modified!"
@@ -34,7 +36,7 @@ on inventory click:
 			event-slot is not 10
 			send "&cShift clicking is disabled!"
 			cancel event
-		loop all blocks in radius 3 around player:
+		loop all blocks in radius 2.5 around player's target block:
 			if loop-block contains bookshelf:
 				add 1 to {_power}
 		event-slot = 10:
@@ -48,6 +50,15 @@ on inventory click:
 			else if cursor slot of player is bow:
 				wait 1 ticks
 				enchantingTableBowUI(player, {_power})
+			else if cursor slot of player is shield or elytra:
+				wait 1 ticks
+				enchantingTableOtherUI(player, {_power})
+			else if cursor slot of player is flint and steel:
+				wait 1 ticks
+				enchantingTableOtherUI(player, {_power})
+			else if cursor slot of player is shears:
+				wait 1 ticks
+				enchantingTableShearsUI(player, {_power})
 			else if cursor slot of player is air:
 				enchantingTableUI(player, 0, {_power})
 			else:
@@ -72,19 +83,19 @@ on inventory click:
 					enchantItemUI({_power}, player, "sword", "sharpness", 5, 5, 11, "")
 					stop
 				name of event-slot = "&eEfficiency I":
-					enchantItemUI({_power}, player, "pickaxe", "efficiency", 1, 1, 4, "")
+					enchantItemUI({_power}, player, "pickaxe", "efficiency", 1, 1, 4, "universalEnchantment")
 					stop
 				name of event-slot = "&eEfficiency II":
-					enchantItemUI({_power}, player, "pickaxe", "efficiency", 2, 2, 6, "")
+					enchantItemUI({_power}, player, "pickaxe", "efficiency", 2, 2, 6, "universalEnchantment")
 					stop
 				name of event-slot = "&eEfficiency III":
-					enchantItemUI({_power}, player, "pickaxe", "efficiency", 3, 3, 8, "")
+					enchantItemUI({_power}, player, "pickaxe", "efficiency", 3, 3, 8, "universalEnchantment")
 					stop
 				name of event-slot = "&eEfficiency IV":
-					enchantItemUI({_power}, player, "pickaxe", "efficiency", 4, 4, 9, "")
+					enchantItemUI({_power}, player, "pickaxe", "efficiency", 4, 4, 9, "universalEnchantment")
 					stop
 				name of event-slot = "&eEfficiency V":
-					enchantItemUI({_power}, player, "pickaxe", "efficiency", 5, 5, 12, "")
+					enchantItemUI({_power}, player, "pickaxe", "efficiency", 5, 5, 12, "universalEnchantment")
 					stop
 				name of event-slot = "&eUnbreaking I":
 					enchantItemUI({_power}, player, "sword", "unbreaking", 1, 2, 3, "universalEnchantment")
@@ -173,6 +184,33 @@ on inventory click:
 				name of event-slot = "&eBane of Arthropods V":
 					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 5, 8, 7, "")
 					stop
+				name of event-slot = "&ePower I":
+					enchantItemUI({_power}, player, "bow", "Power", 1, 1, 2, "")
+					stop
+				name of event-slot = "&ePower II":
+					enchantItemUI({_power}, player, "bow", "Power", 2, 2, 3, "")
+					stop
+				name of event-slot = "&ePower III":
+					enchantItemUI({_power}, player, "bow", "Power", 3, 3, 5, "")
+					stop
+				name of event-slot = "&ePower IV":
+					enchantItemUI({_power}, player, "bow", "Power", 4, 4, 7, "")
+					stop
+				name of event-slot = "&ePower V":
+					enchantItemUI({_power}, player, "bow", "Power", 5, 5, 9, "")
+					stop
+				name of event-slot = "&eFlame":
+					enchantItemUI({_power}, player, "bow", "flame", 1, 2, 5, "")
+					stop
+				name of event-slot = "&ePunch I":
+					enchantItemUI({_power}, player, "bow", "punch", 1, 1, 2, "")
+					stop
+				name of event-slot = "&ePunch II":
+					enchantItemUI({_power}, player, "bow", "punch", 2, 2, 3, "")
+					stop
+				name of event-slot = "&eInfinite":
+					enchantItemUI({_power}, player, "bow", "infinity", 1, 6, 8, "")
+					stop
 		
 function enchantItemUI(power: number, p: player, type: text, enchant: text, level: number, lapis: number, xplevel: number, flags: text):
 	{_flags} contain "enchantmentExp10":
@@ -204,6 +242,12 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 		enchantingTableSwordUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = bow:
 		enchantingTableBowUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = shield or elytra:
+		enchantingTableOtherUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = flint and steel:
+		enchantingTableOtherUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = shears:
+		enchantingTableShearsUI({_p}, {_power})
 	else:
 		close {_p}'s inventory
 		send "&cCannot find this enchanting gui... perhaps id is wrong?%nl%Contact admin for assistance." to {_p}

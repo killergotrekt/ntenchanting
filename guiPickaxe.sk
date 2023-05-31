@@ -53,3 +53,4 @@ function enchantingTablePickaxeUI(p: player, power: number):
 			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III [Max]" with lore "{@maxLevel}"
 		{_silk} is set:
 			set slot 16 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Silk Touch"
+			
