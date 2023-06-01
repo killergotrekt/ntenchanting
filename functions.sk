@@ -1,12 +1,8 @@
 options:
-	version: 0.1
+	version: 0.3
 	enchantingMenuScreen: Enchanting
 	enableQuickWorkbench: true
-
-command /newenchant:
-	permission: op
-	trigger:
-		enchantingTableUI(player, 1, 0)
+	advancedAnvil: true
 
 on left click with crafting table:
 	"{@enableQuickWorkbench}" = "true"
@@ -24,9 +20,11 @@ function enchantingTableUI(p: player, n: number, power: number):
 		open chest inventory with 6 rows named "{@enchantingMenuScreen}" to {_p}
 	wait 1 tick
 	set slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 17, 18, 20, 26, 27, 28, 29, 35, 36, 38, 44, 45, 46, 47, 48, 49, 50, 51, 52, and 53 of {_p}'s current inventory to gray stained glass pane named "&r"
-	set slot 19 of {_p}'s current inventory to cyan stained glass pane named "&fPlace Item Above" with lore "&7Accepted Items:%nl%&9Armor, Swords, Bows,%nL%&9Tools, Shield, Fishing Rod,%nl%&9Elytra, Shears, Trident,%nl%&9Compass, Flint and Steel"
+	set slot 19 of {_p}'s current inventory to cyan stained glass pane named "&bEnchant Item Above" with lore "%nl%&7Enchantable:%nl%&9Armor, Swords, Bows,%nL%&9Tools, Shield, Fishing Rod,%nl%&9Elytra, Shears, Trident,%nl%&9Flint and Steel%nl%%nl%&8Pickaxes, axes, shovels,%nl%&8and hoes are tools!"
 	set slot 37 of {_p}'s current inventory to bookshelf named "&dEnchanting Power: &f%{_power}+0%" with lore "%nl%&7Higher number, more%nl%&7enchantments avaliable.%nl%%nl%&8HINT: Bookshelves should%nl%&8be surrounding this table!"
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to gray dye named "&cNo Item" with lore "&7Place an item to reveal contents.%nl%&7Or re-place item in slot."
+	"{@advancedAnvil}" = "true":
+		set slot 28 of {_p}'s current inventory to glowing anvil named "&cAdvanced Anvil" with lore "%nl%&7Unlock more powerful%nl%&7enchantments beyond%nl%&7the normal limits.%nl%"
 	{_n} = 2:
 		set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to barrier named "&cInvalid Item" with lore "&7This item cannot be modified!"
 
@@ -59,6 +57,12 @@ on inventory click:
 			else if cursor slot of player is shears:
 				wait 1 ticks
 				enchantingTableShearsUI(player, {_power})
+			else if cursor slot of player is fishing rod:
+				wait 1 ticks
+				enchantingTableFishingRodUI(player, {_power})
+			else if cursor slot of player is crossbow:
+				wait 1 ticks
+				enchantingTableCrossbowUI(player, {_power})
 			else if cursor slot of player is air:
 				enchantingTableUI(player, 0, {_power})
 			else:
@@ -211,6 +215,48 @@ on inventory click:
 				name of event-slot = "&eInfinite":
 					enchantItemUI({_power}, player, "bow", "infinity", 1, 6, 8, "")
 					stop
+				name of event-slot = "&eLure I":
+					enchantItemUI({_power}, player, "fishing rod", "lure", 1, 1, 2, "")
+					stop
+				name of event-slot = "&eLure II":
+					enchantItemUI({_power}, player, "fishing rod", "lure", 2, 2, 3, "")
+					stop
+				name of event-slot = "&eLure III":
+					enchantItemUI({_power}, player, "fishing rod", "lure", 3, 3, 4, "")
+					stop
+				name of event-slot = "&eLuck of the Sea I":
+					enchantItemUI({_power}, player, "fishing rod", "Luck of the Sea", 1, 2, 3, "")
+					stop
+				name of event-slot = "&eLuck of the Sea II":
+					enchantItemUI({_power}, player, "fishing rod", "Luck of the Sea", 2, 3, 5, "")
+					stop
+				name of event-slot = "&eLuck of the Sea III":
+					enchantItemUI({_power}, player, "fishing rod", "Luck of the Sea", 3, 4, 7, "")
+					stop
+				name of event-slot = "&eMultishot":
+					enchantItemUI({_power}, player, "crossbow", "multishot", 1, 4, 8, "")
+					stop
+				name of event-slot = "&ePiercing I":
+					enchantItemUI({_power}, player, "crossbow", "Piercing", 1, 2, 2, "")
+					stop
+				name of event-slot = "&ePiercing II":
+					enchantItemUI({_power}, player, "crossbow", "Piercing", 2, 3, 3, "")
+					stop
+				name of event-slot = "&ePiercing III":
+					enchantItemUI({_power}, player, "crossbow", "Piercing", 3, 4, 5, "")
+					stop
+				name of event-slot = "&ePiercing IV":
+					enchantItemUI({_power}, player, "crossbow", "Piercing", 4, 4, 8, "")
+					stop
+				name of event-slot = "&eQuick Charge I":
+					enchantItemUI({_power}, player, "crossbow", "Quick Charge", 1, 2, 2, "")
+					stop
+				name of event-slot = "&eQuick Charge II":
+					enchantItemUI({_power}, player, "crossbow", "Quick Charge", 2, 3, 3, "")
+					stop
+				name of event-slot = "&eQuick Charge III":
+					enchantItemUI({_power}, player, "crossbow", "Quick Charge", 3, 4, 5, "")
+					stop
 		
 function enchantItemUI(power: number, p: player, type: text, enchant: text, level: number, lapis: number, xplevel: number, flags: text):
 	{_flags} contain "enchantmentExp10":
@@ -248,6 +294,10 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 		enchantingTableOtherUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = shears:
 		enchantingTableShearsUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = fishing rod:
+		enchantingTableFishingRodUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = crossbow:
+		enchantingTableCrossbowUI({_p}, {_power})
 	else:
 		close {_p}'s inventory
 		send "&cCannot find this enchanting gui... perhaps id is wrong?%nl%Contact admin for assistance." to {_p}

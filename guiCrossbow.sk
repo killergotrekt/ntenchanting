@@ -1,0 +1,49 @@
+options:
+	maxLevel: &8Maximum Level Reached!
+
+function enchantingTableCrossbowUI(p: player, power: number):
+	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
+	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
+	set {_multishot} to level of multishot of slot 10 of {_p}'s current inventory
+	set {_piercing} to level of piercing of slot 10 of {_p}'s current inventory
+	set {_quickcharge} to level of quick charge of slot 10 of {_p}'s current inventory
+	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
+	{_power}+0 >= 6:
+		{_piercing} is not set:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&ePiercing I" with lore "%nl%&9Costs to enchant:%nl%&3- &72 levels%nl%&3- &72 Lapis Lazuli"
+		{_piercing} is 1:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&ePiercing II" with lore "%nl%&9Costs to enhance:%nl%&3- &73 levels%nl%&3- &73 Lapis Lazuli"
+		{_piercing} is 2:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&ePiercing III" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &74 Lapis Lazuli"
+		{_piercing} is 3:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&ePiercing IV" with lore "%nl%&9Costs to enhance:%nl%&3- &78 levels%nl%&3- &74 Lapis Lazuli"
+		{_piercing} is 4:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&ePiercing IV [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 7:
+		{_quickcharge} is not set:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eQuick Charge I" with lore "%nl%&9Costs to enchant:%nl%&3- &72 levels%nl%&3- &72 Lapis Lazuli"
+		{_quickcharge} is 1:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eQuick Charge II" with lore "%nl%&9Costs to enhance:%nl%&3- &73 levels%nl%&3- &73 Lapis Lazuli"
+		{_quickcharge} is 2:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eQuick Charge III" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &74 Lapis Lazuli"
+		{_quickcharge} is 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eQuick Charge III [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 8:
+		{_unbreaking} is not set:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+		{_unbreaking} is 1:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+		{_unbreaking} is 2:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
+		{_unbreaking} is 3:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 10:
+		{_mend} is not set:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
+		{_mend} is 1:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 12:
+		{_multishot} is not set:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eMultishot" with lore "%nl%&9Costs to enchant:%nl%&3- &78 levels%nl%&3- &74 Lapis Lazuli"
+		{_multishot} is 1:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eMultishot [Max]" with lore "{@maxLevel}"
