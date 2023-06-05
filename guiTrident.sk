@@ -1,0 +1,67 @@
+options:
+	maxLevel: &8Maximum Level Reached!
+
+function enchantingTableTridentUI(p: player, power: number):
+	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
+	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
+	set {_channeling} to level of channeling of slot 10 of {_p}'s current inventory
+	set {_riptide} to level of riptide of slot 10 of {_p}'s current inventory
+	set {_loyalty} to level of loyalty of slot 10 of {_p}'s current inventory
+	set {_impaling} to level of impaling of slot 10 of {_p}'s current inventory
+	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
+	{_power}+0 >= 1:
+		{_impaling} is not set:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling I" with lore "%nl%&9Costs to enchant:%nl%&3- &71 levels%nl%&3- &71 Lapis Lazuli"
+		{_impaling} = 1:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling II" with lore "%nl%&9Costs to enchance:%nl%&3- &72 levels%nl%&3- &72 Lapis Lazuli"
+		{_impaling} = 2:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling III" with lore "%nl%&9Costs to enchance:%nl%&3- &73 levels%nl%&3- &73 Lapis Lazuli"
+		{_impaling} = 3:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling IV" with lore "%nl%&9Costs to enchance:%nl%&3- &74 levels%nl%&3- &74 Lapis Lazuli"
+		{_impaling} = 4:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling V" with lore "%nl%&9Costs to enchance:%nl%&3- &75 levels%nl%&3- &75 Lapis Lazuli"
+		{_impaling} = 5:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eImpaling V [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 4:
+		{_unbreaking} is not set:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+		{_unbreaking} is 1:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+		{_unbreaking} is 2:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
+		{_unbreaking} is 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 6:
+		{_mend} is not set:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
+		{_mend} is 1:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 9:
+		{_channeling} is not set:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eChanneling" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &73 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Riptide"
+		{_channeling} is 1:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eChanneling [Max]" with lore "{@maxLevel}"
+		{_riptide} is set:
+			set slot 15 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Riptide"
+	{_power}+0 >= 12:
+		{_loyalty} is not set:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eLoyalty I" with lore "%nl%&9Costs to enchant:%nl%&3- &72 levels%nl%&3- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Riptide"
+		{_loyalty} is 1:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eLoyalty II" with lore "%nl%&9Costs to enhance:%nl%&3- &74 levels%nl%&3- &73 Lapis Lazuli"
+		{_loyalty} is 2:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eLoyalty III" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &74 Lapis Lazuli"
+		{_loyalty} is 3:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eLoyalty III [Max]" with lore "{@maxLevel}"
+		{_riptide} is set:
+			set slot 16 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Riptide"
+	{_power}+0 >= 17:
+		{_riptide} is not set:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&ERiptide I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Loyalty, Channeling"
+		{_riptide} is 1:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&ERiptide II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+		{_riptide} is 2:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&ERiptide III" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &74 Lapis Lazuli"
+		{_riptide} is 3:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&ERiptide III [Max]" with lore "{@maxLevel}"
+		{_loyalty} or {_channeling} is set:
+			set slot 21 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Loyalty, Channeling"

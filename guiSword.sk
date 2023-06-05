@@ -103,5 +103,3 @@ function enchantingTableSwordUI(p: player, power: number):
 			set slot 24 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Sharpness"
 		{_smite} is set:
 			set slot 24 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Smite"
-#	{_power} >= 14:
-#		set slot 25 of {_p}'s current inventory to name tag named "&aPower Rename" with lore "%nl%&9Costs to rename item:%nl%&c- &72 levels%nl%%nL%&7Supports colors."

@@ -1,8 +1,8 @@
 options:
-	version: 0.3
+	version: 0.4
 	enchantingMenuScreen: Enchanting
 	enableQuickWorkbench: true
-	advancedAnvil: true
+	advancedAnvil: false
 
 on left click with crafting table:
 	"{@enableQuickWorkbench}" = "true"
@@ -42,9 +42,11 @@ on inventory click:
 			cursor slot of player is any sword:
 				wait 1 ticks
 				enchantingTableSwordUI(player, {_power})
-			else if cursor slot of player is any pickaxe:
+			else if cursor slot of player is any pickaxe or any shovel or any hoe:
 				wait 1 ticks
-				enchantingTablePickaxeUI(player, {_power})
+				enchantingTableToolsUI(player, {_power}, false)
+			else if cursor slot of player is any axe:
+				enchantingTableToolsUI(player, {_power}, true)
 			else if cursor slot of player is bow:
 				wait 1 ticks
 				enchantingTableBowUI(player, {_power})
@@ -63,6 +65,9 @@ on inventory click:
 			else if cursor slot of player is crossbow:
 				wait 1 ticks
 				enchantingTableCrossbowUI(player, {_power})
+			else if cursor slot of player is trident:
+				wait 1 ticks
+				enchantingTableTridentUI(player, {_power})
 			else if cursor slot of player is air:
 				enchantingTableUI(player, 0, {_power})
 			else:
@@ -72,19 +77,19 @@ on inventory click:
 				cancel event
 			event-slot = 12, 13, 14, 15, 16, 21, 22, 23 or 24:
 				name of event-slot = "&eSharpness I":
-					enchantItemUI({_power}, player, "sword", "sharpness", 1, 1, 3, "")
+					enchantItemUI({_power}, player, "sword", "sharpness", 1, 1, 3, "universalEnchantment")
 					stop
 				name of event-slot = "&eSharpness II":
-					enchantItemUI({_power}, player, "sword", "sharpness", 2, 2, 5, "")
+					enchantItemUI({_power}, player, "sword", "sharpness", 2, 2, 5, "universalEnchantment")
 					stop
 				name of event-slot = "&eSharpness III":
-					enchantItemUI({_power}, player, "sword", "sharpness", 3, 3, 7, "")
+					enchantItemUI({_power}, player, "sword", "sharpness", 3, 3, 7, "universalEnchantment")
 					stop
 				name of event-slot = "&eSharpness IV":
-					enchantItemUI({_power}, player, "sword", "sharpness", 4, 4, 9, "")
+					enchantItemUI({_power}, player, "sword", "sharpness", 4, 4, 9, "universalEnchantment")
 					stop
 				name of event-slot = "&eSharpness V":
-					enchantItemUI({_power}, player, "sword", "sharpness", 5, 5, 11, "")
+					enchantItemUI({_power}, player, "sword", "sharpness", 5, 5, 11, "universalEnchantment")
 					stop
 				name of event-slot = "&eEfficiency I":
 					enchantItemUI({_power}, player, "pickaxe", "efficiency", 1, 1, 4, "universalEnchantment")
@@ -111,7 +116,7 @@ on inventory click:
 					enchantItemUI({_power}, player, "sword", "unbreaking", 3, 4, 7, "universalEnchantment")
 					stop
 				name of event-slot = "&eSilk Touch":
-					enchantItemUI({_power}, player, "pickaxe", "silk touch", 1, 2, 3, "")
+					enchantItemUI({_power}, player, "pickaxe", "silk touch", 1, 2, 3, "universalEnchantment")
 					stop
 				name of event-slot = "&eMending":
 					enchantItemUI({_power}, player, "sword", "mending", 1, 2, 5, "universalEnchantment")
@@ -123,7 +128,7 @@ on inventory click:
 					enchantItemUI({_power}, player, "sword", "fire aspect", 2, 3, 6, "")
 					stop
 				name of event-slot = "&eSilk Touch":
-					enchantItemUI({_power}, player, "pickaxe", "silk touch", 1, 2, 3, "")
+					enchantItemUI({_power}, player, "pickaxe", "silk touch", 1, 2, 3, "universalEnchantment")
 					stop
 				name of event-slot = "&eKnockback I":
 					enchantItemUI({_power}, player, "sword", "knockback", 1, 1, 2, "")
@@ -132,13 +137,13 @@ on inventory click:
 					enchantItemUI({_power}, player, "sword", "knockback", 2, 2, 3, "")
 					stop
 				name of event-slot = "&eFortune I":
-					enchantItemUI({_power}, player, "pickaxe", "Fortune", 1, 3, 5, "")
+					enchantItemUI({_power}, player, "pickaxe", "Fortune", 1, 3, 5, "universalEnchantment")
 					stop
 				name of event-slot = "&eFortune II":
-					enchantItemUI({_power}, player, "pickaxe", "Fortune", 2, 4, 8, "")
+					enchantItemUI({_power}, player, "pickaxe", "Fortune", 2, 4, 8, "universalEnchantment")
 					stop
 				name of event-slot = "&eFortune III":
-					enchantItemUI({_power}, player, "pickaxe", "Fortune", 3, 5, 11, "")
+					enchantItemUI({_power}, player, "pickaxe", "Fortune", 3, 5, 11, "universalEnchantment")
 					stop
 				name of event-slot = "&eLooting I":
 					enchantItemUI({_power}, player, "sword", "Looting", 1, 2, 2, "")
@@ -159,34 +164,34 @@ on inventory click:
 					enchantItemUI({_power}, player, "sword", "sweeping edge", 3, 3, 4, "")
 					stop
 				name of event-slot = "&eSmite I":
-					enchantItemUI({_power}, player, "sword", "smite", 1, 2, 2, "")
+					enchantItemUI({_power}, player, "sword", "smite", 1, 2, 2, "universalEnchantment")
 					stop
 				name of event-slot = "&eSmite II":
-					enchantItemUI({_power}, player, "sword", "smite", 2, 3, 3, "")
+					enchantItemUI({_power}, player, "sword", "smite", 2, 3, 3, "universalEnchantment")
 					stop
 				name of event-slot = "&eSmite III":
-					enchantItemUI({_power}, player, "sword", "smite", 3, 4, 4, "")
+					enchantItemUI({_power}, player, "sword", "smite", 3, 4, 4, "universalEnchantment")
 					stop
 				name of event-slot = "&eSmite IV":
-					enchantItemUI({_power}, player, "sword", "smite", 4, 5, 5, "")
+					enchantItemUI({_power}, player, "sword", "smite", 4, 5, 5, "universalEnchantment")
 					stop
 				name of event-slot = "&eSmite V":
-					enchantItemUI({_power}, player, "sword", "smite", 5, 8, 7, "")
+					enchantItemUI({_power}, player, "sword", "smite", 5, 8, 7, "universalEnchantment")
 					stop
 				name of event-slot = "&eBane of Arthropods I":
-					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 1, 2, 2, "")
+					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 1, 2, 2, "universalEnchantment")
 					stop
 				name of event-slot = "&eBane of Arthropods II":
-					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 2, 3, 3, "")
+					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 2, 3, 3, "universalEnchantment")
 					stop
 				name of event-slot = "&eBane of Arthropods III":
-					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 3, 4, 4, "")
+					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 3, 4, 4, "universalEnchantment")
 					stop
 				name of event-slot = "&eBane of Arthropods IV":
-					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 4, 5, 5, "")
+					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 4, 5, 5, "universalEnchantment")
 					stop
 				name of event-slot = "&eBane of Arthropods V":
-					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 5, 8, 7, "")
+					enchantItemUI({_power}, player, "sword", "Bane of Arthropods", 5, 8, 7, "universalEnchantment")
 					stop
 				name of event-slot = "&ePower I":
 					enchantItemUI({_power}, player, "bow", "Power", 1, 1, 2, "")
@@ -257,6 +262,42 @@ on inventory click:
 				name of event-slot = "&eQuick Charge III":
 					enchantItemUI({_power}, player, "crossbow", "Quick Charge", 3, 4, 5, "")
 					stop
+				name of event-slot = "&eChanneling":
+					enchantItemUI({_power}, player, "trident", "channeling", 1, 3, 3, "")
+					stop
+				name of event-slot = "&eLoyalty I":
+					enchantItemUI({_power}, player, "trident", "Loyalty", 1, 2, 2, "")
+					stop
+				name of event-slot = "&eLoyalty II":
+					enchantItemUI({_power}, player, "trident", "Loyalty", 2, 3, 4, "")
+					stop
+				name of event-slot = "&eLoyalty III":
+					enchantItemUI({_power}, player, "trident", "Loyalty", 3, 4, 5, "")
+					stop
+				name of event-slot = "&eRiptide I":
+					enchantItemUI({_power}, player, "trident", "Riptide", 1, 2, 3, "")
+					stop
+				name of event-slot = "&eRiptide II":
+					enchantItemUI({_power}, player, "trident", "Riptide", 2, 3, 5, "")
+					stop
+				name of event-slot = "&eRiptide III":
+					enchantItemUI({_power}, player, "trident", "Riptide", 3, 4, 5, "")
+					stop
+				name of event-slot = "&eImpaling I":
+					enchantItemUI({_power}, player, "trident", "Impaling", 1, 1, 1, "universalEnchantment")
+					stop
+				name of event-slot = "&eImpaling II":
+					enchantItemUI({_power}, player, "trident", "Impaling", 2, 2, 2, "universalEnchantment")
+					stop
+				name of event-slot = "&eImpaling III":
+					enchantItemUI({_power}, player, "trident", "Impaling", 3, 3, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eImpaling IV":
+					enchantItemUI({_power}, player, "trident", "Impaling", 4, 4, 4, "universalEnchantment")
+					stop
+				name of event-slot = "&eImpaling V":
+					enchantItemUI({_power}, player, "trident", "Impaling", 5, 5, 5, "universalEnchantment")
+					stop
 		
 function enchantItemUI(power: number, p: player, type: text, enchant: text, level: number, lapis: number, xplevel: number, flags: text):
 	{_flags} contain "enchantmentExp10":
@@ -280,10 +321,16 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 	else:
 		enchant slot 10 of {_p}'s current inventory with "%{_enchant}% %{_level}%" parsed as enchantment type
 	{_flags} do not contain "bypassCostEnchantmentCheck":
+		slot 10 of {_p}'s current inventory = air:
+			close {_p}'s inventory
+			send "&cNice try, but you cannot enchant &lair&c." to {_p}
+			stop
 		remove {_lapis} of lapis lazuli from {_p}'s inventory
 		reduce {_p}'s level by {_xplevel}
-	slot 10 of {_p}'s current inventory = any pickaxe:
-		enchantingTablePickaxeUI({_p}, {_power})
+	slot 10 of {_p}'s current inventory = any pickaxe or any shovel or any hoe:
+		enchantingTableToolsUI({_p}, {_power}, false)
+	else if slot 10 of {_p}'s current inventory = any axe:
+		enchantingTableToolsUI({_p}, {_power}, true)
 	else if slot 10 of {_p}'s current inventory = any sword:
 		enchantingTableSwordUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = bow:
@@ -296,13 +343,15 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 		enchantingTableShearsUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = fishing rod:
 		enchantingTableFishingRodUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = trident:
+		enchantingTableTridentUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = crossbow:
 		enchantingTableCrossbowUI({_p}, {_power})
 	else:
 		close {_p}'s inventory
 		send "&cCannot find this enchanting gui... perhaps id is wrong?%nl%Contact admin for assistance." to {_p}
 		stop
-	play sound "block.enchantment_table.use" at volume 2 at pitch 1 to {_p}
+	play sound "block.enchantment_table.use" at volume 3 at pitch 1 to {_p}
 	
 on inventory close:
 	if name of event-inventory is "{@enchantingMenuScreen}":
