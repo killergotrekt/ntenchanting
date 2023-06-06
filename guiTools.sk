@@ -1,58 +1,163 @@
 options:
 	maxLevel: &8Maximum Level Reached!
 
-function enchantingTableToolsUI(p: player, power: number, isAxe: boolean):
+function enchantingTableToolsUI(p: player, power: number):
 	set {_efficiency} to level of efficiency of slot 10 of {_p}'s current inventory
 	set {_silk} to level of silk touch of slot 10 of {_p}'s current inventory
 	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
 	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
 	set {_fortune} to level of fortune of slot 10 of {_p}'s current inventory
-	set {_sharpness} to level of sharpness of slot 10 of {_p}'s current inventory
-	set {_bane} to level of Bane of Arthropods of slot 10 of {_p}'s current inventory
-	set {_smite} to level of smite of slot 10 of {_p}'s current inventory
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
 	{_power}+0 >= 0:
 		{_efficiency} is not set:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency I" with lore "%nl%&9Costs to enchant:%nl%&3- &74 levels%nl%&3- &71 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency I" with lore "%nl%&9Costs to enchant:%nl%&f- &74 levels%nl%&f- &71 Lapis Lazuli"
 		{_efficiency} = 1:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency II" with lore "%nl%&9Costs to enchance:%nl%&3- &76 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency II" with lore "%nl%&9Costs to enchance:%nl%&f- &76 levels%nl%&f- &72 Lapis Lazuli"
 		{_efficiency} = 2:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency III" with lore "%nl%&9Costs to enchance:%nl%&3- &78 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency III" with lore "%nl%&9Costs to enchance:%nl%&f- &78 levels%nl%&f- &73 Lapis Lazuli"
 		{_efficiency} = 3:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency IV" with lore "%nl%&9Costs to enchance:%nl%&3- &79 levels%nl%&3- &74 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency IV" with lore "%nl%&9Costs to enchance:%nl%&f- &79 levels%nl%&f- &74 Lapis Lazuli"
 		{_efficiency} = 4:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V" with lore "%nl%&9Costs to enchance:%nl%&3- &712 levels%nl%&3- &75 Lapis Lazuli"
-		{_efficiency} = 5:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V" with lore "%nl%&9Costs to enchance:%nl%&f- &712 levels%nl%&f- &75 Lapis Lazuli"
+		{_efficiency} >= 5:
 			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 8:
 		{_silk} is not set:
-			set slot 15 of {_p}'s current inventory to enchanted book named "&eSilk Touch" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Fortune"
-		{_silk} is 1:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eSilk Touch" with lore "%nl%&9Costs to enchant:%nl%&f- &73 levels%nl%&f- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Fortune"
+		{_silk} >= 1:
 			set slot 15 of {_p}'s current inventory to enchanted book named "&eSilk Touch [Max]" with lore "{@maxLevel}"
 		{_fortune} is set:
 			set slot 15 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Fortune"
 	{_power}+0 >= 4:
 		{_mend} is not set:
-			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
-		{_mend} is 1:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&f- &75 levels%nl%&f- &72 Lapis Lazuli"
+		{_mend} >= 1:
 			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 2:
 		{_unbreaking} is not set:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&f- &73 levels%nl%&f- &72 Lapis Lazuli"
 		{_unbreaking} is 1:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&f- &75 levels%nl%&f- &73 Lapis Lazuli"
 		{_unbreaking} is 2:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
-		{_unbreaking} is 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&f- &77 levels%nl%&f- &74 Lapis Lazuli"
+		{_unbreaking} >= 3:
 			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 11:
 		{_fortune} is not set:
-			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune I" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Silk Touch"
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune I" with lore "%nl%&9Costs to enchant:%nl%&f- &75 levels%nl%&f- &73 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Silk Touch"
 		{_fortune} is 1:
-			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune II" with lore "%nl%&9Costs to enhance:%nl%&3- &78 levels%nl%&3- &74 Lapis Lazuli"
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune II" with lore "%nl%&9Costs to enhance:%nl%&f- &78 levels%nl%&f- &74 Lapis Lazuli"
 		{_fortune} is 2:
-			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III" with lore "%nl%&9Costs to enhance:%nl%&3- &711 levels%nl%&3- &75 Lapis Lazuli"
-		{_fortune} is 3:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III" with lore "%nl%&9Costs to enhance:%nl%&f- &711 levels%nl%&f- &75 Lapis Lazuli"
+		{_fortune} >= 3:
 			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III [Max]" with lore "{@maxLevel}"
 		{_silk} is set:
 			set slot 16 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Silk Touch"
+			
+function enchantingTableToolsAxeUI(p: player, power: number):
+	wait 1 ticks
+	set {_efficiency} to level of efficiency of slot 10 of {_p}'s current inventory
+	set {_silk} to level of silk touch of slot 10 of {_p}'s current inventory
+	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
+	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
+	set {_fortune} to level of fortune of slot 10 of {_p}'s current inventory
+	set {_smite} to level of smite of slot 10 of {_p}'s current inventory
+	set {_bane} to level of Bane of Arthropods of slot 10 of {_p}'s current inventory
+	set {_sharp} to level of sharpness of slot 10 of {_p}'s current inventory
+	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
+	{_power}+0 >= 0:
+		{_efficiency} is not set:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency I" with lore "%nl%&9Costs to enchant:%nl%&f- &74 levels%nl%&f- &71 Lapis Lazuli"
+		{_efficiency} = 1:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency II" with lore "%nl%&9Costs to enchance:%nl%&f- &76 levels%nl%&f- &72 Lapis Lazuli"
+		{_efficiency} = 2:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency III" with lore "%nl%&9Costs to enchance:%nl%&f- &78 levels%nl%&f- &73 Lapis Lazuli"
+		{_efficiency} = 3:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency IV" with lore "%nl%&9Costs to enchance:%nl%&f- &79 levels%nl%&f- &74 Lapis Lazuli"
+		{_efficiency} = 4:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V" with lore "%nl%&9Costs to enchance:%nl%&f- &712 levels%nl%&f- &75 Lapis Lazuli"
+		{_efficiency} >= 5:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 8:
+		{_silk} is not set:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eSilk Touch" with lore "%nl%&9Costs to enchant:%nl%&f- &73 levels%nl%&f- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Fortune"
+		{_silk} >= 1:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eSilk Touch [Max]" with lore "{@maxLevel}"
+		{_fortune} is set:
+			set slot 15 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Fortune"
+	{_power}+0 >= 4:
+		{_mend} is not set:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&f- &75 levels%nl%&f- &72 Lapis Lazuli"
+		{_mend} >= 1:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 2:
+		{_unbreaking} is not set:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&f- &73 levels%nl%&f- &72 Lapis Lazuli"
+		{_unbreaking} is 1:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&f- &75 levels%nl%&f- &73 Lapis Lazuli"
+		{_unbreaking} is 2:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&f- &77 levels%nl%&f- &74 Lapis Lazuli"
+		{_unbreaking} >= 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
+	{_power}+0 >= 11:
+		{_fortune} is not set:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune I" with lore "%nl%&9Costs to enchant:%nl%&f- &75 levels%nl%&f- &73 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Silk Touch"
+		{_fortune} is 1:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune II" with lore "%nl%&9Costs to enhance:%nl%&f- &78 levels%nl%&f- &74 Lapis Lazuli"
+		{_fortune} is 2:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III" with lore "%nl%&9Costs to enhance:%nl%&f- &711 levels%nl%&f- &75 Lapis Lazuli"
+		{_fortune} >= 3:
+			set slot 16 of {_p}'s current inventory to enchanted book named "&eFortune III [Max]" with lore "{@maxLevel}"
+		{_silk} is set:
+			set slot 16 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Silk Touch"
+	{_power}+0 >= 11:
+		{_sharp} is not set:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness I" with lore "%nl%&9Costs to enchant:%nl%&f- &73 levels%nl%&f- &71 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Smite, Bane of%nl%&7Arthropods"
+		{_sharp} = 1:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness II" with lore "%nl%&9Costs to enchance:%nl%&f- &75 levels%nl%&f- &72 Lapis Lazuli"
+		{_sharp} = 2:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness III" with lore "%nl%&9Costs to enchance:%nl%&f- &77 levels%nl%&f- &73 Lapis Lazuli"
+		{_sharp} = 3:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness IV" with lore "%nl%&9Costs to enchance:%nl%&f- &79 levels%nl%&f- &74 Lapis Lazuli"
+		{_sharp} = 4:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness V" with lore "%nl%&9Costs to enchance:%nl%&f- &711 levels%nl%&f- &75 Lapis Lazuli"
+		{_sharp} >= 5:
+			set slot 21 of {_p}'s current inventory to enchanted book named "&eSharpness V [Max]" with lore "{@maxLevel}"
+		{_smite} is set:
+			set slot 21 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Smite"
+		{_bane} is set:
+			set slot 21 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Bane of Arthropods"
+	{_power} >= 11.1:
+		{_smite} is not set:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite I" with lore "%nl%&9Costs to enchant:%nl%&f- &72 levels%nl%&f- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Sharpness, Bane of%nl%&7Arthropods"
+		{_smite} is 1:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite II" with lore "%nl%&9Costs to enhance:%nl%&f- &73 levels%nl%&f- &73 Lapis Lazuli"
+		{_smite} is 2:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite III" with lore "%nl%&9Costs to enhance:%nl%&f- &74 levels%nl%&f- &74 Lapis Lazuli"
+		{_smite} is 3:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite IV" with lore "%nl%&9Costs to enhance:%nl%&f- &76 levels%nl%&f- &75 Lapis Lazuli"
+		{_smite} is 4:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite V" with lore "%nl%&9Costs to enhance:%nl%&f- &78 levels%nl%&f- &77 Lapis Lazuli"
+		{_smite} >= 5:
+			set slot 22 of {_p}'s current inventory to enchanted book named "&eSmite V [Max]" with lore "{@maxLevel}"
+		{_sharp} is set:
+			set slot 22 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Sharpness"
+		{_bane} is set:
+			set slot 22 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Bane of Arthropods"
+	{_power} >= 11.2:
+		{_bane} is not set:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods I" with lore "%nl%&9Costs to enchant:%nl%&f- &72 levels%nl%&f- &72 Lapis Lazuli%nl%%nl%&4&l! &4Conflicts:%nl%&7Sharpness, Bane of%nl%&7Arthropods"
+		{_bane} is 1:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods II" with lore "%nl%&9Costs to enhance:%nl%&f- &73 levels%nl%&f- &73 Lapis Lazuli"
+		{_bane} is 2:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods III" with lore "%nl%&9Costs to enhance:%nl%&f- &74 levels%nl%&f- &74 Lapis Lazuli"
+		{_bane} is 3:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods IV" with lore "%nl%&9Costs to enhance:%nl%&f- &76 levels%nl%&f- &75 Lapis Lazuli"
+		{_bane} is 4:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods V" with lore "%nl%&9Costs to enhance:%nl%&f- &78 levels%nl%&f- &77 Lapis Lazuli"
+		{_bane} >= 5:
+			set slot 23 of {_p}'s current inventory to enchanted book named "&eBane of Arthropods V [Max]" with lore "{@maxLevel}"
+		{_sharp} is set:
+			set slot 23 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Sharpness"
+		{_smite} is set:
+			set slot 23 of {_p}'s current inventory to barrier named "&cBanned Enchantment" with lore "&8Conflicting with: Smite"

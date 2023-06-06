@@ -2,58 +2,61 @@ options:
 	maxLevel: &8Maximum Level Reached!
 
 function enchantingTableOtherUI(p: player, power: number):
+	wait 1 tick
 	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
 	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
 	{_power}+0 >= 4:
 		{_unbreaking} is not set:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&2- &73 levels%nl%&2- &72 Lapis Lazuli"
 		{_unbreaking} is 1:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&2- &75 levels%nl%&2- &73 Lapis Lazuli"
 		{_unbreaking} is 2:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
-		{_unbreaking} is 3:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&2- &77 levels%nl%&2- &74 Lapis Lazuli"
+		{_unbreaking} >= 3:
 			set slot 12 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 6:
 		{_mend} is not set:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
-		{_mend} is 1:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&2- &75 levels%nl%&2- &72 Lapis Lazuli"
+		{_mend} >= 1:
 			set slot 13 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
 
 function enchantingTableShearsUI(p: player, power: number):
+	wait 1 tick
 	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
 	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
 	set {_efficiency} to level of efficiency of slot 10 of {_p}'s current inventory
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
 	{_power}+0 >= 6:
 		{_unbreaking} is not set:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&2- &73 levels%nl%&2- &72 Lapis Lazuli"
 		{_unbreaking} is 1:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&2- &75 levels%nl%&2- &73 Lapis Lazuli"
 		{_unbreaking} is 2:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
-		{_unbreaking} is 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&2- &77 levels%nl%&2- &74 Lapis Lazuli"
+		{_unbreaking} >= 3:
 			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 8:
 		{_mend} is not set:
-			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
-		{_mend} is 1:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&2- &75 levels%nl%&2- &72 Lapis Lazuli"
+		{_mend} >= 1:
 			set slot 14 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 0:
 		{_efficiency} is not set:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency I" with lore "%nl%&9Costs to enchant:%nl%&3- &74 levels%nl%&3- &71 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency I" with lore "%nl%&9Costs to enchant:%nl%&2- &74 levels%nl%&2- &71 Lapis Lazuli"
 		{_efficiency} = 1:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency II" with lore "%nl%&9Costs to enchance:%nl%&3- &76 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency II" with lore "%nl%&9Costs to enchance:%nl%&2- &76 levels%nl%&2- &72 Lapis Lazuli"
 		{_efficiency} = 2:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency III" with lore "%nl%&9Costs to enchance:%nl%&3- &78 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency III" with lore "%nl%&9Costs to enchance:%nl%&2- &78 levels%nl%&2- &73 Lapis Lazuli"
 		{_efficiency} = 3:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency IV" with lore "%nl%&9Costs to enchance:%nl%&3- &79 levels%nl%&3- &74 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency IV" with lore "%nl%&9Costs to enchance:%nl%&2- &79 levels%nl%&2- &74 Lapis Lazuli"
 		{_efficiency} = 4:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V" with lore "%nl%&9Costs to enchance:%nl%&3- &712 levels%nl%&3- &75 Lapis Lazuli"
-		{_efficiency} = 5:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V" with lore "%nl%&9Costs to enchance:%nl%&2- &712 levels%nl%&2- &75 Lapis Lazuli"
+		{_efficiency} >= 5:
 			set slot 12 of {_p}'s current inventory to enchanted book named "&eEfficiency V [Max]" with lore "{@maxLevel}"
 			
 function enchantingTableFishingRodUI(p: player, power: number):
+	wait 1 tick
 	set {_mend} to level of mending of slot 10 of {_p}'s current inventory
 	set {_unbreaking} to level of unbreaking of slot 10 of {_p}'s current inventory
 	set {_lure} to level of lure of slot 10 of {_p}'s current inventory
@@ -61,33 +64,33 @@ function enchantingTableFishingRodUI(p: player, power: number):
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to light gray stained glass pane named "&c"
 	{_power}+0 >= 2:
 		{_lure} is not set:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure I" with lore "%nl%&9Costs to enchant:%nl%&3- &72 levels%nl%&3- &71 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure I" with lore "%nl%&9Costs to enchant:%nl%&2- &72 levels%nl%&2- &71 Lapis Lazuli"
 		{_lure} is 1:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure II" with lore "%nl%&9Costs to enhance:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure II" with lore "%nl%&9Costs to enhance:%nl%&2- &73 levels%nl%&2- &72 Lapis Lazuli"
 		{_lure} is 2:
-			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure III" with lore "%nl%&9Costs to enhance:%nl%&3- &74 levels%nl%&3- &73 Lapis Lazuli"
-		{_lure} is 3:
+			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure III" with lore "%nl%&9Costs to enhance:%nl%&2- &74 levels%nl%&2- &73 Lapis Lazuli"
+		{_lure} >= 3:
 			set slot 12 of {_p}'s current inventory to enchanted book named "&eLure III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 4:
 		{_unbreaking} is not set:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking I" with lore "%nl%&9Costs to enchant:%nl%&2- &73 levels%nl%&2- &72 Lapis Lazuli"
 		{_unbreaking} is 1:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&3- &75 levels%nl%&3- &73 Lapis Lazuli"
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking II" with lore "%nl%&9Costs to enhance:%nl%&2- &75 levels%nl%&2- &73 Lapis Lazuli"
 		{_unbreaking} is 2:
-			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&3- &77 levels%nl%&3- &74 Lapis Lazuli"
-		{_unbreaking} is 3:
+			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III" with lore "%nl%&9Costs to enhance:%nl%&2- &77 levels%nl%&2- &74 Lapis Lazuli"
+		{_unbreaking} >= 3:
 			set slot 13 of {_p}'s current inventory to enchanted book named "&eUnbreaking III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 6:
 		{_lucksea} is not set:
-			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea I" with lore "%nl%&9Costs to enchant:%nl%&3- &72 levels%nl%&3- &71 Lapis Lazuli"
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea I" with lore "%nl%&9Costs to enchant:%nl%&2- &72 levels%nl%&2- &71 Lapis Lazuli"
 		{_lucksea} is 1:
-			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea II" with lore "%nl%&9Costs to enhance:%nl%&3- &73 levels%nl%&3- &72 Lapis Lazuli"
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea II" with lore "%nl%&9Costs to enhance:%nl%&2- &73 levels%nl%&2- &72 Lapis Lazuli"
 		{_lucksea} is 2:
-			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea III" with lore "%nl%&9Costs to enhance:%nl%&3- &74 levels%nl%&3- &73 Lapis Lazuli"
-		{_lucksea} is 3:
+			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea III" with lore "%nl%&9Costs to enhance:%nl%&2- &74 levels%nl%&2- &73 Lapis Lazuli"
+		{_lucksea} >= 3:
 			set slot 14 of {_p}'s current inventory to enchanted book named "&eLuck of the Sea III [Max]" with lore "{@maxLevel}"
 	{_power}+0 >= 8:
 		{_mend} is not set:
-			set slot 15 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&3- &75 levels%nl%&3- &72 Lapis Lazuli"
-		{_mend} is 1:
+			set slot 15 of {_p}'s current inventory to enchanted book named "&eMending" with lore "%nl%&9Costs to enchant:%nl%&2- &75 levels%nl%&2- &72 Lapis Lazuli"
+		{_mend} >= 1:
 			set slot 15 of {_p}'s current inventory to enchanted book named "&eMending [Max]" with lore "{@maxLevel}"

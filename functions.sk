@@ -1,5 +1,5 @@
 options:
-	version: 0.4
+	version: 0.5
 	enchantingMenuScreen: Enchanting
 	enableQuickWorkbench: true
 	advancedAnvil: false
@@ -44,9 +44,17 @@ on inventory click:
 				enchantingTableSwordUI(player, {_power})
 			else if cursor slot of player is any pickaxe or any shovel or any hoe:
 				wait 1 ticks
-				enchantingTableToolsUI(player, {_power}, false)
+				enchantingTableToolsUI(player, {_power})
 			else if cursor slot of player is any axe:
-				enchantingTableToolsUI(player, {_power}, true)
+				enchantingTableToolsAxeUI(player, {_power})
+			else if cursor slot of player is any helmet:
+				enchantingTableArmorUI(player, {_power}, "helmet")
+			else if cursor slot of player is any chestplate:
+				enchantingTableArmorUI(player, {_power}, "chestplate")
+			else if cursor slot of player is any leggings:
+				enchantingTableArmorUI(player, {_power}, "leggings")
+			else if cursor slot of player is any boots:
+				enchantingTableArmorUI(player, {_power}, "boots")
 			else if cursor slot of player is bow:
 				wait 1 ticks
 				enchantingTableBowUI(player, {_power})
@@ -75,7 +83,7 @@ on inventory click:
 		else:
 			event-inventory is not inventory of player:
 				cancel event
-			event-slot = 12, 13, 14, 15, 16, 21, 22, 23 or 24:
+			event-slot = 12, 13, 14, 15, 16, 21, 22, 23 or 24 or 25:
 				name of event-slot = "&eSharpness I":
 					enchantItemUI({_power}, player, "sword", "sharpness", 1, 1, 3, "universalEnchantment")
 					stop
@@ -298,7 +306,109 @@ on inventory click:
 				name of event-slot = "&eImpaling V":
 					enchantItemUI({_power}, player, "trident", "Impaling", 5, 5, 5, "universalEnchantment")
 					stop
-		
+				name of event-slot = "&eProtection I":
+					enchantItemUI({_power}, player, "armor", "protection", 1, 1, 2, "universalEnchantment")
+					stop
+				name of event-slot = "&eProtection II":
+					enchantItemUI({_power}, player, "armor", "protection", 2, 2, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eProtection III":
+					enchantItemUI({_power}, player, "armor", "protection", 3, 3, 4, "universalEnchantment")
+					stop
+				name of event-slot = "&eProtection IV":
+					enchantItemUI({_power}, player, "armor", "protection", 4, 4, 5, "universalEnchantment")
+					stop
+				name of event-slot = "&eProjectile Protection I":
+					enchantItemUI({_power}, player, "armor", "Projectile protection", 1, 1, 2, "universalEnchantment")
+					stop
+				name of event-slot = "&eProjectile Protection II":
+					enchantItemUI({_power}, player, "armor", "Projectile protection", 2, 1, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eProjectile Protection III":
+					enchantItemUI({_power}, player, "armor", "Projectile protection", 3, 2, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eProjectile Protection IV":
+					enchantItemUI({_power}, player, "armor", "Projectile protection", 4, 2, 4, "universalEnchantment")
+					stop
+				name of event-slot = "&eFire Protection I":
+					enchantItemUI({_power}, player, "armor", "Fire protection", 1, 1, 2, "universalEnchantment")
+					stop
+				name of event-slot = "&eFire Protection II":
+					enchantItemUI({_power}, player, "armor", "Fire protection", 2, 1, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eFire Protection III":
+					enchantItemUI({_power}, player, "armor", "Fire protection", 3, 2, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eFire Protection IV":
+					enchantItemUI({_power}, player, "armor", "Fire protection", 4, 2, 4, "universalEnchantment")
+					stop
+				name of event-slot = "&eBlast Protection I":
+					enchantItemUI({_power}, player, "armor", "Blast protection", 1, 1, 2, "universalEnchantment")
+					stop
+				name of event-slot = "&eBlast Protection II":
+					enchantItemUI({_power}, player, "armor", "Blast protection", 2, 1, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eBlast Protection III":
+					enchantItemUI({_power}, player, "armor", "Blast protection", 3, 2, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eBlast Protection IV":
+					enchantItemUI({_power}, player, "armor", "Blast protection", 4, 2, 4, "universalEnchantment")
+					stop
+				name of event-slot = "&eThorns I":
+					enchantItemUI({_power}, player, "armor", "Thorns", 1, 3, 1, "universalEnchantment")
+					stop
+				name of event-slot = "&eThorns II":
+					enchantItemUI({_power}, player, "armor", "Thorns", 2, 3, 3, "universalEnchantment")
+					stop
+				name of event-slot = "&eThorns III":
+					enchantItemUI({_power}, player, "armor", "Thorns", 3, 3, 5, "universalEnchantment")
+					stop
+				name of event-slot = "&eRespiration I":
+					enchantItemUI({_power}, player, "helmet", "Respiration", 1, 2, 1, "")
+					stop
+				name of event-slot = "&eRespiration II":
+					enchantItemUI({_power}, player, "helmet", "Respiration", 2, 3, 2, "")
+					stop
+				name of event-slot = "&eRespiration III":
+					enchantItemUI({_power}, player, "helmet", "Respiration", 3, 4, 3, "")
+					stop
+				name of event-slot = "&eAffinity":
+					enchantItemUI({_power}, player, "helmet", "aqua affinity", 1, 1, 3, "")
+					stop
+				name of event-slot = "&eSwift Sneak I":
+					enchantItemUI({_power}, player, "leggings", "Swift Sneak", 1, 1, 3, "")
+					stop
+				name of event-slot = "&eSwift Sneak II":
+					enchantItemUI({_power}, player, "leggings", "Swift Sneak", 2, 2, 5, "")
+					stop
+				name of event-slot = "&eSwift Sneak III":
+					enchantItemUI({_power}, player, "leggings", "Swift Sneak", 3, 3, 7, "")
+					stop
+				name of event-slot = "&eFeather Falling I":
+					enchantItemUI({_power}, player, "boots", "Feather Falling", 1, 1, 2, "")
+					stop
+				name of event-slot = "&eFeather Falling II":
+					enchantItemUI({_power}, player, "boots", "Feather Falling", 2, 2, 3, "")
+					stop
+				name of event-slot = "&eFeather Falling III":
+					enchantItemUI({_power}, player, "boots", "Feather Falling", 3, 3, 4, "")
+					stop
+				name of event-slot = "&eFeather Falling IV":
+					enchantItemUI({_power}, player, "boots", "Feather Falling", 4, 4, 5, "")
+					stop
+				name of event-slot = "&eDepth Strider I":
+					enchantItemUI({_power}, player, "boots", "Depth Strider", 1, 1, 3, "")
+					stop
+				name of event-slot = "&eDepth Strider II":
+					enchantItemUI({_power}, player, "boots", "Depth Strider", 2, 2, 5, "")
+					stop
+				name of event-slot = "&eDepth Strider III":
+					enchantItemUI({_power}, player, "boots", "Depth Strider", 3, 3, 7, "")
+					stop
+				name of event-slot = "&eFrost Walker":
+					enchantItemUI({_power}, player, "boots", "Frost Walker", 1, 5, 3, "")
+					stop
+
 function enchantItemUI(power: number, p: player, type: text, enchant: text, level: number, lapis: number, xplevel: number, flags: text):
 	{_flags} contain "enchantmentExp10":
 		add 10 to {_level}
@@ -328,9 +438,9 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 		remove {_lapis} of lapis lazuli from {_p}'s inventory
 		reduce {_p}'s level by {_xplevel}
 	slot 10 of {_p}'s current inventory = any pickaxe or any shovel or any hoe:
-		enchantingTableToolsUI({_p}, {_power}, false)
+		enchantingTableToolsUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = any axe:
-		enchantingTableToolsUI({_p}, {_power}, true)
+		enchantingTableToolsAxeUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = any sword:
 		enchantingTableSwordUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = bow:
@@ -347,6 +457,14 @@ function enchantItemUI(power: number, p: player, type: text, enchant: text, leve
 		enchantingTableTridentUI({_p}, {_power})
 	else if slot 10 of {_p}'s current inventory = crossbow:
 		enchantingTableCrossbowUI({_p}, {_power})
+	else if slot 10 of {_p}'s current inventory = any helmet:
+		enchantingTableArmorUI({_p}, {_power}, "helmet")
+	else if slot 10 of {_p}'s current inventory = any chestplate:
+		enchantingTableArmorUI({_p}, {_power}, "chestplate")
+	else if slot 10 of {_p}'s current inventory = any leggings:
+		enchantingTableArmorUI({_p}, {_power}, "leggings")
+	else if slot 10 of {_p}'s current inventory = any boots:
+		enchantingTableArmorUI({_p}, {_power}, "boots")
 	else:
 		close {_p}'s inventory
 		send "&cCannot find this enchanting gui... perhaps id is wrong?%nl%Contact admin for assistance." to {_p}
