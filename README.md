@@ -4,3 +4,6 @@
 gui-based enchanting based off skript
 
 created for: Minecraft 1.19.4
+
+## Ballots
+An extension of NT Enchanting. Will not be under releases.
