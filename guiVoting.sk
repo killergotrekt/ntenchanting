@@ -1,0 +1,58 @@
+on load:
+	set {votingoptions::*} to "ageofWonders", "glassKombat", "IRS", "buffIRS", "cancelSun", "buffUndead", "cancelJump", "marryPlayers", "throwArrows", "ntEnchanting", "noEnchantArmor", "noEnchantSword", "noEnchantAxe", "deadlyWater", "lavaImmunity", "bedPVP", "noU", "treeConservation", "cancelStars", "ganpatBoss", "impeachAndConvictPresident", "cancelPVP", "boostJump", "chargedCreepers", "grapplingHooks", "randomLightningStrikes", "betterTogether", "disableNether", "dropSuperSharpnessBooks", "dropSuperProtectionBooks", "presidentWeatherPowers", "presidentkeepInvPowers", "presidentFlightPowers", "presidentDifficultyPowers", "presidentEnslavePowers", "presidentKickPowers", "presidentdoubleVotingPowers", "presidentSearchPowers", "presidentConsecutiveTerms", "presidentOverrideElectionsPowers", "overturnElections", "forceVote", "oneMinuteOneItem", "strictVoterLaws", "presidentElections", "initiativeElections", "snitch", "betterEnderDragonBoss", "instaBucket", "disableCrafting", "throneOfPresidency", "deadlySpikes", "testingCarrotTheory", "blazingFury", "breakBedrock", "emeraldInflation", "getPlayerHeadWhenKill", "maxMiningFortune", "arsenalOfDemocracy", "clusterBombs", "disableItemMend", "disableItemDespawn", "banAll", "operationDesertStorm", "ambushMobs", "losPolloHermanos", "lagSpikes", "poisonousFood", "leafletArmor", "fishAnything", "banFishing", "gigaTools", "preventFloatingTrees", "drownNoProblem", "initiativeElectionTieRuleChange", "presidentalElectionTieRuleChange", "stopAdvancedAnvils", "buffNether", "buffEnd", "discriminateBedrockPlayers", "eatingTax", "wealthTax", "walkingTax", "randomTargets", "knockbackToTheFuture", and "forceSmeltAllOres"
+	send "&aElections - Voting options loaded." to console
+
+on stop:
+	delete {votingoptions::*}
+	send "&aElections - Voting options deleted." to console
+
+command /vote [<text>] [<text>]:
+	trigger:
+		arg-1 is set:
+			arg-1 = "list":
+				{activeLaws::*} is not set:
+					send "&eThere are no initiatives in effect."
+				else:
+					send "&eActive (%amount of {activeLaws::*}+0%): %{activeLaws::*}%"
+			player is op
+			arg-1 = "devlist":
+				send "&aAll options (%amount of {votingoptions::*}%): %{votingoptions::*}%%nl%&eActive (%amount of {activeLaws::*}+0%): %{activeLaws::*}%"
+			arg-1 = "approve" or "unrepeal":
+				arg-2 = "all":
+					set {activeLaws::*} to {votingoptions::*}
+					send "&a&oAdministrator Bonus: We added everything!"
+					send "&b%player% force-approved ALL initiatives. The age of armageddon have begun." to all players
+					stop
+				"%{votingoptions::*}%" contains arg-2
+				"%{activeLaws::*}%" does not contain arg-2
+				add arg-2 to {activeLaws::*}
+				send "&a&oAdministrator Bonus: Approved initiative %arg-2%." to player
+				set {_description} to yml value arg-2 from file "plugins\Skript\scripts\votingOptions.yml"
+				send colored "&b%player% force-approved an initiative: %arg-2%.%nl%&b&o%{_description}%" to all players
+			arg-1 = "repeal" or "unapprove":
+				arg-2 = "all":
+					delete {activeLaws::*}
+					send "&a&oAdministrator Bonus: Removed all initiatives in effect."
+					send "&b%player% force-repealed ALL initiatives." to all players
+					stop
+				"%{votingoptions::*}%" contains arg-2
+				"%{activeLaws::*}%" contains arg-2
+				remove arg-2 from {activeLaws::*}
+				send "&a&oAdministrator Bonus: Repealed initiative %arg-2%." to player
+				send colored "&b%player% force-repealed an initiative: %arg-2%." to all players
+				
+#on player arm swing:
+#    send "You swung your arm!" to player
+
+command /grab3random:
+	trigger:
+		set {_copy::*} to {votingoptions::*}
+		set {_a} to random element out of {_copy::*}
+		remove {_a} from {_copy::*}
+		set {_b} to random element out of {_copy::*}
+		remove {_b} from {_copy::*}
+		set {_c} to random element out of {_copy::*}
+		remove {_c} from {_copy::*}
+		send "Picked 3: &a%{_a}% + %{_b}% + %{_c}%"
+		send "Left: %{_copy::*}%"
+		
