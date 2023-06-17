@@ -1,0 +1,20 @@
+function rainbow(input: string, wrapAmount: number = -1, lightness: number = 0.5) :: string:
+    set {_delta} to 360 / ({_wrapAmount} if {_wrapAmount} > 0, else length of {_input})
+    set {_lightnessModifier} to (({_lightness}*2)-1) * 255
+    set {_angle} to 90
+    loop length of {_input} times:
+        set {_character} to character at loop-value in {_input}
+        if {_character} or (character at (loop-value - 1) in {_input}) is "§":
+            if "abcdefklmnor0123456789" contains {_character}:
+                set {_format} to (join {_format} and "&%{_character}%") if {_character} is not "r", else ("")
+            continue      
+        loop 3 times:
+            set {_n::%loop-value-2%} to (0.5 * (sin(({_angle} + (loop-number-2*120-120))) + 1)) * 255 + {_lightnessModifier}
+        set {_output} to join {_output}, RGBToHex({_n::*}), {_format} and {_character}
+        remove {_delta} from {_angle}
+    return colored {_output}
+	
+function RGBToHex(number: numbers) :: string:
+    loop {_number::*}:
+        set {_r} to join {_r}, (character at (mod((floor(min(max(loop-value, 0), 255) / 16)), 16) + 1) in "0123456789ABCDEF") and (character at ((mod(min(max(loop-value, 0), 255), 16)) + 1) in "0123456789ABCDEF")
+    return colored "<##%{_r}%>"

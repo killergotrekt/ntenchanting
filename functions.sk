@@ -1,5 +1,5 @@
 options:
-	version: 1.0.0
+	version: 1.0.0_votingModified
 	enchantingMenuScreen: Enchanting
 	enableQuickWorkbench: true
 	advancedAnvil: true
@@ -9,11 +9,12 @@ on left click with crafting table:
 	open workbench view to player
 		
 on right click on enchanting table:
-	cancel event
-	loop all blocks in radius 2.5 around event-block:
-		if loop-block contains bookshelf:
-			add 1 to {_power}
-	enchantingTableUI(player, 1, {_power})
+	{activeLaws::*} contains "ntEnchanting":
+		cancel event
+		loop all blocks in radius 2.5 around event-block:
+			if loop-block contains bookshelf:
+				add 1 to {_power}
+		enchantingTableUI(player, 1, {_power})
 
 function enchantingTableUI(p: player, n: number, power: number):
 	{_n} = 1:

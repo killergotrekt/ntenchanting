@@ -21,7 +21,7 @@ function advancedAnvilUI(p: player, n: number, power: number):
 	
 command magicalBookGive [<text>] [<number>] [<text>]:
 	permission: op
-	usage: arg-1 can also be: list
+	usage: arg-1 can also be: list, nbthand, clearall with code 3786
 	trigger:
 		arg-1 or arg-2 is not set:
 			send "missing arguments"
@@ -30,6 +30,10 @@ command magicalBookGive [<text>] [<number>] [<text>]:
 			stop
 		else if arg-1 = "nbthand":
 			send "%nbt of player's tool%"
+			stop
+		else if arg-1 = "ciearall":
+			arg-2 = 3786
+			delete {bannedBookID::*}
 			stop
 		else:
 			set {_arg1} to arg-1

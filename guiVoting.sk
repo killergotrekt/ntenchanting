@@ -1,22 +1,173 @@
+# {optionsHead::1}, {optionsHead::2}, {optionsHead::3}
+# !!!! MUST BE PRE-SET WITH AN ICON, PREFERLY A CUSTOM HEAD !!!!
+options:
+	voting: Proposals (choose one wisely)
+	
 on load:
-	set {votingoptions::*} to "ageofWonders", "glassKombat", "IRS", "buffIRS", "cancelSun", "buffUndead", "cancelJump", "marryPlayers", "throwArrows", "ntEnchanting", "noEnchantArmor", "noEnchantSword", "noEnchantAxe", "deadlyWater", "lavaImmunity", "bedPVP", "noU", "treeConservation", "cancelStars", "ganpatBoss", "impeachAndConvictPresident", "cancelPVP", "boostJump", "chargedCreepers", "grapplingHooks", "randomLightningStrikes", "betterTogether", "disableNether", "dropSuperSharpnessBooks", "dropSuperProtectionBooks", "presidentWeatherPowers", "presidentkeepInvPowers", "presidentFlightPowers", "presidentDifficultyPowers", "presidentEnslavePowers", "presidentKickPowers", "presidentdoubleVotingPowers", "presidentSearchPowers", "presidentConsecutiveTerms", "presidentOverrideElectionsPowers", "overturnElections", "forceVote", "oneMinuteOneItem", "strictVoterLaws", "presidentElections", "initiativeElections", "snitch", "betterEnderDragonBoss", "instaBucket", "disableCrafting", "throneOfPresidency", "deadlySpikes", "testingCarrotTheory", "blazingFury", "breakBedrock", "emeraldInflation", "getPlayerHeadWhenKill", "maxMiningFortune", "arsenalOfDemocracy", "clusterBombs", "disableItemMend", "disableItemDespawn", "banAll", "operationDesertStorm", "ambushMobs", "losPolloHermanos", "lagSpikes", "poisonousFood", "leafletArmor", "fishAnything", "banFishing", "gigaTools", "preventFloatingTrees", "drownNoProblem", "initiativeElectionTieRuleChange", "presidentalElectionTieRuleChange", "stopAdvancedAnvils", "buffNether", "buffEnd", "discriminateBedrockPlayers", "eatingTax", "wealthTax", "walkingTax", "randomTargets", "knockbackToTheFuture", and "forceSmeltAllOres"
-	send "&aElections - Voting options loaded." to console
+	set {votingoptions::*} to yml list "allOfTheCompleteOptions" from file "plugins\Skript\scripts\votingOptions.yml"
+	send "&aElections - %amount of {votingoptions::*}% voting options loaded." to console
 
+on tab complete of "/vote":
+	player is op:
+		set tab completions for position 1 to "approve", "repeal", "devlist", "list", "callNewElectionWithPresident" and "callNewElection"
+		if tab arg-1 = "approve":
+			set tab completions for position 2 to sorted {votingoptions::*}
+		else if tab arg-1 = "repeal":
+			set tab completions for position 2 to sorted {activeLaws::*}
+	else:
+		set tab completions for position 1 to "list"
+		
 on stop:
 	delete {votingoptions::*}
 	send "&aElections - Voting options deleted." to console
+	
+function generateElection(isPresidental: boolean):
+	delete {options::*}
+	set {_unpickedlist::*} to {votingoptions::*}
+	loop (amount of {activeLaws::*}) times:
+		set {_grabRandomShit} to random element out of {activeLaws::*}
+		remove {_grabRandomShit} from {votingoptions::*}
+	wait 0.5 second
+	set {_copy::*} to {votingoptions::*}
+	set {_1} to random element out of {_copy::*}
+	remove {_1} from {_copy::*}
+	set {_1desc} to yml value {_1} from file "plugins\Skript\scripts\votingDescriptions.yml"
+	set {options::1::name} to {_1}
+	{_1} contains "%{activeLaws::*}%":
+		set {options::1::type} to "repeal"
+		set {options::1::guiSlot} to {optionsHead::1} named "&eProposal 1" with lore "%nl%&cRepeal Initiative%nl%&7%{_1}%%nl%&7&o%{_1desc}%"
+	else:
+		set {options::1::type} to "approve"
+		set {options::1::guiSlot} to {optionsHead::1} named "&eProposal 1" with lore "%nl%&aApprove Initiative%nl%&7%{_1}%%nl%&7&o%{_1desc}%"
+	amount of {activeLaws::*} is greater than (random number between 3 and 6):
+		set {_2} to random element out of {activeLaws::*}
+		set {_2desc} to yml value {_2} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {options::2::name} to {_2}
+		set {options::2::type} to "repeal"
+		set {options::2::guiSlot} to {optionsHead::2} named "&eProposal 2" with lore "%nl%&cRepeal Initiative%nl%&7%{_2}%%nl%&7&o%{_2desc}%"
+	else:
+		set {_2} to random element out of {_unpickedlist::*} 
+		remove {_2} from {_unpickedlist::*} 
+		set {_2desc} to yml value {_2} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {options::2::name} to {_2}
+		set {options::2::type} to "approve"
+		set {options::2::guiSlot} to {optionsHead::2} named "&eProposal 2" with lore "%nl%&aApprove Initiative%nl%&7%{_2}%%nl%&7&o%{_2desc}%"
+	remove {_2} from {_copy::*}
+	amount of {activeLaws::*} is greater than 5:
+		set {_3} to random element out of {_unpickedlist::*} 
+		remove {_3} from {_unpickedlist::*} 
+		set {_3desc} to yml value {_3} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {_4} to random element out of {activeLaws::*}
+		while {_4} = {_2}:
+			set {_4} to random element out of {activeLaws::*}
+		set {_4desc} to yml value {_4} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {options::3::name} to {_3}
+		set {options::3::name2} to {_4}
+		set {options::3::type} to "approvebutrepeal"
+		set {options::3::guiSlot} to {optionsHead::3} named "&eProposal 3" with lore "%nl%&aApprove Initiative%nl%&7%{_3}%%nl%&7&o%{_3desc}%%nl%&cbut Repeal Initiative%nl%&7%{_4}%%nl%&7&o%{_4desc}%"
+	else:
+		set {_3} to random element out of {_unpickedlist::*} 
+		remove {_3} from {_unpickedlist::*} 
+		set {_3desc} to yml value {_3} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {options::3::name} to {_3}
+		set {options::3::type} to "approve"
+		set {options::3::guiSlot} to {optionsHead::3} named "&eProposal 3" with lore "%nl%&aApprove Initiative%nl%&7%{_3}%%nl%&7&o%{_3desc}%"
+	
+command /iconVotingSet <number>:
+	permission: *
+	trigger:
+		set {optionshead::%arg%} to player's held item
+		
+function finalInitiativeElection(x: text, n: number):
+	{options::%{_n}%::type} is set
+	broadcast "&bElections heve ended."
+	{options::%{_n}%::type} = "approve":
+		add {options::%{_n}%::name} to {activeLaws::*}
+		wait 1 second
+		set {_desc} to yml value {options::%{_n}%::name} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		broadcast "&b%{_x}%%nl%&b&l%{options::%{_n}%::name}%%nl%&b&o%{_desc}%"
+	{options::%{_n}%::type} = "repeal":
+		remove {options::%{_n}%::name} from {activeLaws::*}
+		wait 1 second
+		set {_desc} to yml value {options::%{_n}%::name} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		broadcast "&b%{_x}%%nl%&b&l%{options::%{_n}%::name}%%nl%&b&o%{_desc}%"
+	{options::%{_n}%::type} = "approvebutrepeal":
+		add {options::3::name} to {activeLaws::*}
+		remove {options::4::name} from {activeLaws::*}
+		wait 1 second
+		set {_desc1} to yml value {options::3::name} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		set {_desc2} to yml value {options::4::name} from file "plugins\Skript\scripts\votingDescriptions.yml"
+		broadcast "&b%{_x}%%nl%&b&l%{options::3::name}% is approved.%nl%&b&o%{_desc1}%%nl%&b&l%{options::4::name}% is repealed.%nl%&b&o%{_desc2}%"
+	delete {options::*}
 
-command /vote [<text>] [<text>]:
+command /endElections:
+	permission: *
+	trigger:
+		{options::1::guiSlot} or {options::2::guiSlot} or {options::3::guiSlot} is not set:
+			send "&cElections have not been started!"
+			stop
+		# CHECK VOTERS 1 = 2 = 3 
+		amount of {options::3::voters::*} = amount of {options::2::voters::*}:
+			amount of {options::3::voters::*} = amount of {options::1::voters::*}:
+				{activeLaws::*} contains "initiativeElectionTieRuleChange":
+					broadcast "&bElections heve ended.%nl%&cDue to all proposals having same amount of votes, nothing was passed."
+					delete {options::*}
+				else:
+					set {_n} to round(random number between 1 and 3)
+					finalInitiativeElection("Due to all proposals having same amount of votes, a random proposal was approved.", {_n})
+				stop
+
+command /votingScreen:
+	trigger:
+		{options::1::guiSlot} or {options::2::guiSlot} or {options::3::guiSlot} is not set:
+			send "&cElections have not been started!"
+			stop
+		set {_item} to {options::1::guiSlot}
+		set {_item2} to {options::2::guiSlot} 
+		set {_item3} to {options::3::guiSlot} 
+		{options::1::voters::*} does not contain "%player%":
+			{options::2::voters::*} or {options::3::voters::*} contain "%player%":
+				add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item}
+			else:
+				add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item}
+		else:
+			add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item}
+		{options::2::voters::*} does not contain "%player%":
+			{options::1::voters::*} or {options::3::voters::*} contain "%player%":
+				add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item2}
+			else:
+				add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item2}
+		else:
+			add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item2}
+		{options::3::voters::*} does not contain "%player%":
+			{options::2::voters::*} or {options::1::voters::*} contain "%player%":
+				add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item3}
+			else:
+				add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item3}
+		else:
+			add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item3}
+		open hopper inventory named "{@voting}" to player
+		set slot 0, 1, 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals")
+		set slot 1 of current inventory of player to {_item}
+		set slot 2 of current inventory of player to {_item2}
+		set slot 3 of current inventory of player to {_item3}
+
+command /vote [<text>] [<text>] [<text>]:
+	aliases: v
 	trigger:
 		arg-1 is set:
 			arg-1 = "list":
 				{activeLaws::*} is not set:
 					send "&eThere are no initiatives in effect."
 				else:
-					send "&eActive (%amount of {activeLaws::*}+0%): %{activeLaws::*}%"
+					send "&eActive (%amount of {activeLaws::*}+0%): %sorted {activeLaws::*}%"
 			player is op
+			arg-1 = "callNewElection":
+				generateElection(false)
+			arg-1 = "callNewElectionWithPresident":
+				generateElection(true)
 			arg-1 = "devlist":
-				send "&aAll options (%amount of {votingoptions::*}%): %{votingoptions::*}%%nl%&eActive (%amount of {activeLaws::*}+0%): %{activeLaws::*}%"
+				send "&aAll options (%amount of {votingoptions::*}%): %sorted {votingoptions::*}%%nl%&eActive (%amount of {activeLaws::*}+0%): %sorted {activeLaws::*}%"
 			arg-1 = "approve" or "unrepeal":
 				arg-2 = "all":
 					set {activeLaws::*} to {votingoptions::*}
@@ -27,7 +178,7 @@ command /vote [<text>] [<text>]:
 				"%{activeLaws::*}%" does not contain arg-2
 				add arg-2 to {activeLaws::*}
 				send "&a&oAdministrator Bonus: Approved initiative %arg-2%." to player
-				set {_description} to yml value arg-2 from file "plugins\Skript\scripts\votingOptions.yml"
+				set {_description} to yml value arg-2 from file "plugins\Skript\scripts\votingDescriptions.yml"
 				send colored "&b%player% force-approved an initiative: %arg-2%.%nl%&b&o%{_description}%" to all players
 			arg-1 = "repeal" or "unapprove":
 				arg-2 = "all":
@@ -41,18 +192,58 @@ command /vote [<text>] [<text>]:
 				send "&a&oAdministrator Bonus: Repealed initiative %arg-2%." to player
 				send colored "&b%player% force-repealed an initiative: %arg-2%." to all players
 				
-#on player arm swing:
-#    send "You swung your arm!" to player
+				
+on inventory click:
+	if name of event-inventory is "{@voting}":
+		cancel event
+		"%click type%" contains "with shift":
+			event-slot is not 10
+			send "&cShift clicking is disabled!"
+		event-inventory is not inventory of player
+		name of event-slot = "&eProposal 1":
+			{options::1::voters::*} or {options::2::voters::*} or {options::3::voters::*} contain "%player%":
+				stop
+			player's group contains "President":
+				"%{activeLaws::*}%" contains "presidentdoubleVotingPowers":
+					loop 6 times:
+						add "%player%" to {options::1::voters::*}
+				else:
+					loop 3 times:
+						add "%player%" to {options::1::voters::*}
+			else:
+				add "%player%" to {options::1::voters::*}
+			close player's inventory
+			player command "/votingScreen"
+		name of event-slot = "&eProposal 2":
+			{options::1::voters::*} or {options::2::voters::*} or {options::3::voters::*} contain "%player%":
+				stop
+			player's group contains "President":
+				"%{activeLaws::*}%" contains "presidentdoubleVotingPowers":
+					loop 6 times:
+						add "%player%" to {options::2::voters::*}
+				else:
+					loop 3 times:
+						add "%player%" to {options::2::voters::*}
+			else:
+				add "%player%" to {options::2::voters::*}
+			close player's inventory
+			player command "/votingScreen"
+		name of event-slot = "&eProposal 3":
+			{options::1::voters::*} or {options::2::voters::*} or {options::3::voters::*} contain "%player%":
+				stop
+			player's group contains "President":
+				"%{activeLaws::*}%" contains "presidentdoubleVotingPowers":
+					loop 6 times:
+						add "%player%" to {options::3::voters::*}
+				else:
+					loop 3 times:
+						add "%player%" to {options::3::voters::*}
+			else:
+				add "%player%" to {options::3::voters::*}
+			close player's inventory
+			player command "/votingScreen"
+		"%{activeLaws::*}%" contains "snitch":
+			broadcast "&b%player% voted for %name of event-slot%&b!"
 
-command /grab3random:
-	trigger:
-		set {_copy::*} to {votingoptions::*}
-		set {_a} to random element out of {_copy::*}
-		remove {_a} from {_copy::*}
-		set {_b} to random element out of {_copy::*}
-		remove {_b} from {_copy::*}
-		set {_c} to random element out of {_copy::*}
-		remove {_c} from {_copy::*}
-		send "Picked 3: &a%{_a}% + %{_b}% + %{_c}%"
-		send "Left: %{_copy::*}%"
-		
+#on player arm swing:
+#	send "a"
