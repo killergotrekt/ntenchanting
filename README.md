@@ -21,3 +21,8 @@ An extension of NT Enchanting. Will not be under releases.
 
 ## Features
 - 104 Changes: Spice up your gameplay with *democracy*.
+
+## Credits
+| Rule  | Source |
+| ------------- | ------------- |
+| ageOfWonders  | [Veinminer (click here)](https://www.spigotmc.org/resources/vein-miner.78958/)  |
