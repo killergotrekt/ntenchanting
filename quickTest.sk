@@ -20,7 +20,7 @@ function RGBToHex(number: numbers) :: string:
     return colored "<##%{_r}%>"
 
 on chat:
-	set chat format to "&7[%{party::%player%}%] %player%: &f%message%"
+	set chat format to "[%{party::%player%}%] %player%: &f%message%"
 	
 command /party [<text>]:
 	trigger:
@@ -30,7 +30,7 @@ command /party [<text>]:
 		set slot 2 of current inventory of player to blue wool named "&bDemocrat" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
 		set slot 3 of current inventory of player to red wool named "&cCommunist" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
 		set slot 4 of current inventory of player to black wool named "&8Fascist" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
-		set slot 5 of current inventory of player to green wool named "&2Worker" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
+		set slot 5 of current inventory of player to green wool named "&2Populist" with lore "&8&o1 gameplay impact.%nl%%nl%&eClick to switch."
 		set slot 6 of current inventory of player to lime wool named "&aLibertarian" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
 		set slot 7 of current inventory of player to white wool named "&fNational Socialist" with lore "&8&oNo gameplay impact.%nl%%nl%&eClick to switch."
 		set slot 8 of current inventory of player to magenta wool named "&dWar Criminal" with lore "&8&o3 gameplay impacts.%nl%%nl%&eClick to switch."
@@ -40,7 +40,7 @@ command /iwannabepresident [<text>]:
 	trigger:
 		(first element of sorted {scheduledElections::*}) is not (first element of sorted {scheduledpresidentalElections::*}):
 			{options::presidental} is not true
-			send "&cThe next election does not contain a presidental election.%nl%&cPerhaps you want to change your political party while you wait? (/party)"
+			send "&cThe next election does not contain a presidental election.%nl%<run command:/party>&cPerhaps you want to change your political party while you wait? (/party) or &lClick here to do so."
 			stop
 		{options::announcePresidency} is not true:
 			{options::presidental} is not true
@@ -69,15 +69,29 @@ command /iwannabepresident [<text>]:
 		else:
 			send "&cAll spots have been taken, by %{options::president1::name}% and %{options::president2::name}%."
 
+command Please-Do-Not-Change:presidentChangeItem <integer> [<offlineplayer>]:
+	permission: *
+	trigger:
+		arg-1 = -1:
+			delete {options::president1::*}
+			delete {options::president2::*}
+			send "&cCleared president candidates"
+		arg-1 = 1 or 2:
+			arg-2 is set:
+				set {options::president%arg-1%::name} to arg-2
+				send "&aSet Candidate %arg-1% to %arg-2%"
+			else:
+				send "&aRemoved Candidate %{options::president%arg-1%::name}%"
+				delete {options::president%arg-1%::name}
 	
 command /presidentVoteUI:
 	trigger:
-		{options::president1::name} or {options::president2::name} is not set:
-			send "&cDoesn't seem like there is a president running.%nl%&cPerhaps you want to change your political party while you wait? (/party)"
+		{options::president1::name} is not set:
+			send "&cThe next election does not contain a presidental election.%nl%<run command:/party>&cPerhaps you want to change your political party while you wait? (/party) or &lClick here to do so."
 			stop
 		open hopper inventory named "Presidental Elections" to player
 		{options::president1::name} is set:
-			set {_1} to ("%{options::president1::name}%" parsed as offline player)'s skull named "%{options::president1::name}%" with lore "&7%{party::%player%}%%nl%%nl%&8%amount of {options::president1::voters::*}+0% votes"
+			set {_1} to ("%{options::president1::name}%" parsed as offline player)'s skull named "%{options::president1::name}%" with lore "&7%{party::%{options::president1::name}%}%%nl%%nl%&8%amount of {options::president1::voters::*}+0% votes"
 			{options::president1::voters::*} does not contain "%player%":
 				{options::president2::voters::*} contain "%player%":
 					add colored "<##ff2b2b>✘ You already voted!" to lore of {_1}
@@ -88,7 +102,7 @@ command /presidentVoteUI:
 		else:
 			set {_1} to barrier named "&cNo Person" with lore "&7Do you want to run?%nl%&b/iwannabepresident"
 		{options::president2::name} is set:
-			set {_2} to ("%{options::president2::name}%" parsed as offline player)'s skull named "%{options::president2::name}%" with lore "&7%{party::%player%}%%nl%%nl%&8%amount of {options::president2::voters::*}+0% votes"
+			set {_2} to ("%{options::president2::name}%" parsed as offline player)'s skull named "%{options::president2::name}%" with lore "&7%{party::%{options::president2::name}%}%%nl%%nl%&8%amount of {options::president2::voters::*}+0% votes"
 			{options::president2::voters::*} does not contain "%player%":
 				{options::president1::voters::*} contain "%player%":
 					add colored "<##ff2b2b>✘ You already voted!" to lore of {_2}
@@ -108,6 +122,7 @@ on inventory click:
 		set {party::%player%} to name of event-slot
 		close player's inventory
 		send "&9Your political party was switched to: %{party::%player%}%"
+		console command "nte player %player% prefix '[%{party::%player%}%] '"
 		name of event-slot = "&dWar Criminal":
 			set max health of player to 5
 			set player's walking speed to 0.3
@@ -132,9 +147,26 @@ on inventory click:
 				add "%player%" to {options::president1::voters::*}
 			close player's inventory
 			player command "/presidentVoteUI"
+		event-slot = 3:
+			name of event-slot is not "&cNo Person"
+			{options::president1::voters::*} or {options::president2::voters::*} contain "%player%":
+				stop
+			player's group contains "President":
+				"%{activeLaws::*}%" contains "presidentdoubleVotingPowers":
+					loop 6 times:
+						add "%player%" to {options::president2::voters::*}
+				else:
+					loop 3 times:
+						add "%player%" to {options::president2::voters::*}
+			else:
+				add "%player%" to {options::president2::voters::*}
+			close player's inventory
+			player command "/presidentVoteUI"
 		
 command settings [<text>]:
 	aliases: policy, policies
-	permission: modify.settings
 	trigger:
+		{president} is not player:
+			send "&cYou are not the president."
+			stop
 		open chest inventory with 4 rows named "Presidental Powers & Policies" to player

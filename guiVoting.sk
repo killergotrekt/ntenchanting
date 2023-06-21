@@ -22,7 +22,7 @@ on load:
 
 on tab complete of "/vote":
 	player is op:
-		set tab completions for position 1 to "approve", "repeal", "cancel", "devlist", "list", "callNewElectionWithPresident" and "callNewElection"
+		set tab completions for position 1 to "approve", "repeal", "cancel", "devlist", "list", "triggerElectionPresident" and "triggerElection"
 		if tab arg-1 = "approve":
 			set tab completions for position 2 to sorted {votingoptions::*}
 		else if tab arg-1 = "repeal":
@@ -41,6 +41,7 @@ on stop:
 	send "&aElections - If there was an election currently, it has been canceled." to console
 	
 function generateElection(isPresidental: boolean):
+	set {options::electionTime} to 30 minutes from now
 	delete {options::*}
 	set {_unpickedlist::*} to {votingoptions::*}
 	loop (amount of {activeLaws::*}) times:
@@ -93,6 +94,7 @@ function generateElection(isPresidental: boolean):
 		set {options::3::guiSlot} to {optionsHead::3} named "&eProposal 3" with lore "%nl%&aApprove Initiative%nl%&7%{_3}%%nl%&7&o%{_3desc}%"
 	{_isPresidental} = true:
 		set {options::presidental} to true
+	set {options::electionTime} to 30 minutes from now
 	
 command /Please-Do-Not-Change:iconVotingSet <number> <number>:
 	permission: *
@@ -102,7 +104,7 @@ command /Please-Do-Not-Change:iconVotingSet <number> <number>:
 		set {optionshead::%arg-1%} to player's held item
 		send "Changed icon for ##%arg-1%"
 
-command /Please-Do-Not-Change:addVote <number> [<number>]:
+command /Please-Do-Not-Change:addVoteInitiative <number> [<number>]:
 	permission: *
 	permission message: &7&ophew. imagine trying to screw with the vote.
 	trigger:
@@ -111,6 +113,36 @@ command /Please-Do-Not-Change:addVote <number> [<number>]:
 			loop (arg-2)-1 times:
 				add "%{_b}%" to {options::%arg-1%::voters::*}
 		add "%{_b}%" to {options::%arg-1%::voters::*}
+
+command /Please-Do-Not-Change:addVotePresident <number> [<number>]:
+	permission: *
+	permission message: &7&ophew. imagine trying to screw with the vote.
+	trigger:
+		set {_b} to random integer between 1 and 500
+		arg-2 is set:
+			loop (arg-2)-1 times:
+				add "%{_b}%" to {options::president%arg-1%::voters::*}
+		add "%{_b}%" to {options::president%arg-1%::voters::*}
+		
+command /Please-Do-Not-Change:setPresident [<offlineplayer>]:
+	permission: *
+	permission message: &7&ophew. imagine trying to screw with the vote.
+	trigger:
+		arg-1 is not set:
+			console command "pex user %{president}% group set default"
+			wait 10 ticks
+			delete {president}
+			delete {presidentVotedInParty}
+			send "&aGot rid of president."
+		else:
+			console command "pex user %{president}% group set default"
+			console command "nte player %{president}% suffix ''"
+			wait 10 ticks
+			set {president} to arg
+			set {presidentVotedInParty} to {party::%arg%}
+			console command "nte player %{president}% suffix ' &3✪'"
+			send "&a%{president}% is now president."
+			
 			
 command /endElections:
 	permission: *
@@ -125,11 +157,9 @@ command /endElections:
 			amount of {options::3::voters::*} = amount of {options::1::voters::*}:
 				{activeLaws::*} contains "initiativeElectionTieRuleChange":
 					broadcast "&bElections heve ended.%nl%&cDue to all proposals having same amount of votes, nothing was passed."
-					delete {options::*}
 				else:
 					set {_n} to round(random number between 1 and 3)
 					finalInitiativeElection("Due to all proposals having same amount of votes, a random proposal was chosen.", {_n})
-				stop
 		set {_list::*} to amount of {options::1::voters::*}, amount of {options::2::voters::*}, and amount of {options::3::voters::*}
 		set {_min} to min({_list::*})
 		loop 3 times:
@@ -162,7 +192,6 @@ command /endElections:
 			else:
 				{activeLaws::*} contains "initiativeElectionTieRuleChange":
 					broadcast "&bElections heve ended.%nl%&cDue to two proposals having same amount of votes, nothing was passed."
-					delete {options::*}
 				set {_pick} to random element out of {_listcopy::*}
 				amount of {options::1::voters::*} = {_pick}:
 					add 1 to {_lottery::*}
@@ -181,13 +210,17 @@ command /endElections:
 			{options::president1::name} is set:
 				{options::president2::name} is not set:
 					finalPresidentElection("%{options::president1::name}% ran unopposed and now is president.", 1)
+					stop
 			amount of {options::president1::voters::*} = amount of {options::president2::voters::*}:
-				set {_winner} to random number between 1 and 2
+				set {_winner} to round(random number between 1 and 2)
 				finalPresidentElection("Two candidates recieved same amount of votes, so %{options::president%{_winner}%::name}% was randomly picked.", {_winner})
+				stop
 			amount of {options::president1::voters::*} > amount of {options::president2::voters::*}:
 				finalPresidentElection("%{options::president1::name}% got the most votes and is now the president.", 1)
+				stop
 			else:
 				finalPresidentElection("%{options::president2::name}% got the most votes and is now the president.", 2)
+				stop
 		wait 5 seconds
 		delete {options::*}
 
@@ -224,16 +257,16 @@ command /vote [<text>] [<text>] [<text>]:
 			else:
 				add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item3}
 			open hopper inventory named "{@voting}" to player
-			set slot 0, 1, 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals")
-			{options::presidental} = false:
-				set slot 1 of current inventory of player to {_item}
-				set slot 2 of current inventory of player to {_item2}
-				set slot 3 of current inventory of player to {_item3}
-			else:
+			set slot 0, 1, 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals") with lore ""
+			{options::presidental} = true:
 				set slot 0 of current inventory of player to jukebox named "&ePresidental Elections" with lore "%nl%&bCandidates:%nl%&7- %{options::president1::name}%%nl%&7- %{options::president2::name}%%nl%%nl%&eClick to vote..."
 				set slot 2 of current inventory of player to {_item}
 				set slot 3 of current inventory of player to {_item2}
 				set slot 4 of current inventory of player to {_item3}
+			else:
+				set slot 1 of current inventory of player to {_item}
+				set slot 2 of current inventory of player to {_item2}
+				set slot 3 of current inventory of player to {_item3}
 		arg-1 is set:
 			arg-1 = "list":
 				{activeLaws::*} is not set:
@@ -244,9 +277,9 @@ command /vote [<text>] [<text>] [<text>]:
 			arg-1 = "cancel":
 				delete {options::*}
 				broadcast "&b%player% canceled elections!"
-			arg-1 = "callNewElection":
+			arg-1 = "triggerElection":
 				generateElection(false)
-			arg-1 = "callNewElectionWithPresident":
+			arg-1 = "triggerElectionPresident":
 				generateElection(true)
 			arg-1 = "devlist":
 				send "&aAll options (%amount of {votingoptions::*}%): %sorted {votingoptions::*}%%nl%&eActive (%amount of {activeLaws::*}+0%): %sorted {activeLaws::*}%"
@@ -330,12 +363,14 @@ on inventory click:
 
 function finalPresidentElection(x: text, n: number):
 	console command "pex user %{president}% group set default"
+	console command "nte player %{president}% suffix ''"
 	wait 10 ticks
 	broadcast "&3%{_x}%"
 	set {president} to {options::president%{_n}%::name}
 	set {presidentVotedInParty} to {party::%{options::president%{_n}%::name}%}
-	console command "pex user %{party::%{options::president%{_n}%::name}%}% group set President"
-	wait 10 ticks
+	console command "pex user %{president}% group set President"
+	console command "nte player %{president}% suffix ' &3✪'"
+	wait 3 ticks
 	send "%nl%%nl%&3&lCongrats on being president.%nl%To enact policies, command: &3/settings &for &3/policy" to {president}
 
 function finalInitiativeElection(x: text, n: number):
@@ -346,6 +381,7 @@ function finalInitiativeElection(x: text, n: number):
 		wait 1 second
 		set {_desc} to yml value {options::%{_n}%::name} from file "plugins\Skript\scripts\votingDescriptions.yml"
 		broadcast "&b%{_x}%%nl%&a&l%{options::%{_n}%::name}% was approved.%nl%&a&o%{_desc}%"
+		customCommand({options::%{_n}%::name})
 	{options::%{_n}%::type} = "repeal":
 		remove {options::%{_n}%::name} from {activeLaws::*}
 		wait 1 second

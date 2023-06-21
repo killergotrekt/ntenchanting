@@ -1,4 +1,20 @@
+on join:
+	{options::electionTime} is set:
+		player does not contain "%{options::1::voters::*}%" or "%{options::2::voters::*}%" or "%{options::3::voters::*}%"
+		wait 1 second
+		send "%nl%<run command:/v>&bHey, it doesn't seem like you voted yet. &lClick on this message to make your voice heard."
+	
+on tab complete of "/scheduler":
+	player is op:
+		set tab completions for position 1 to "clear", "count", "list", "next", "nextpresident", "cancel2ndOne", "addElection", "addElectionEZ", "addElectionMonth", "addPresidentalElection", "addPresidentalElectionCustomTime", "cancelFirstOne" and "cancelFirstOnePresident"
 
+command /beginElectionTimer:
+	permission: *
+	trigger:
+		wait 1 second
+		broadcast "a"
+		set {options::electionTime} to 30 minutes after now
+	
 every second:
 	set {_nextDate} to first element of sorted {scheduledElections::*}
 	set {_nextPresidentalDate} to first element of sorted {scheduledPresidentalElections::*}
@@ -51,19 +67,20 @@ every second:
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
 			broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
 	{_difference} < 2 second:
+		console command "beginElectionTimer"
+		set {options::electionTime} to 30 minutes after now
 		set {options::dateInCasePresidentElectionFail} to 1 day after {_nextDate}
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
 			remove {_nextDate} from {scheduledpresidentalElections::*}
+			console command "/vote triggerElectionPresident"
+		else:
+			console command "/vote triggerElection"
 		remove {_nextDate} from {scheduledElections::*}
-		console command "vote callNewElection"
 		broadcast "<run command:/v>&3&l&k11111111111111111111111111111111111111%nl%%nl%<run command:/v>&bElections are open again!%nl%<run command:/v>&b&lCLICK HERE TO MAKE YOUR VOICE HEARD.%nl%%Nl%<run command:/v>&3&l&k11111111111111111111111111111111111111"
 	loop all players:
 		{party::%loop-player%} is not set:
 			set {party::%loop-player%} to "&7Independent"
-		group of loop-player = "President":
-			set loop-player tab name to "&7[&l%{party::%loop-player%}%] %loop-player% &3✪"
-		else:
-			set loop-player tab name to "&7[&l%{party::%loop-player%}%] %loop-player%"
+			console command "nte player %loop-player% prefix '[%{party::%loop-player%}%] '"
 		wipe loop-player's sidebar
 		set name of sidebar of loop-player to "&e&lvoting"
 		{options::1::guislot} is set:
@@ -71,24 +88,33 @@ every second:
 			{_endTime} < 1 second:
 				close loop-player's inventory
 				console command "/endelections"
-			set {_textFormat2} to "%{_endTime}%"
-			replace all " hours " with "h" in {_textFormat2}
-			replace all " hour " with "h" in {_textFormat2}
-			replace all "and" with "" in {_textFormat2}
-			replace all " minutes " with "m" in {_textFormat2}
-			replace all " minute " with "m" in {_textFormat2}
-			replace all " seconds" with "s" in {_textFormat2}
-			replace all " second" with "s" in {_textFormat2}
+			{options::electionTime} is set:
+				set {_textFormat2} to "%{_endTime}%"
+				replace all " hours " with "h" in {_textFormat2}
+				replace all " hour " with "h" in {_textFormat2}
+				replace all "and" with "" in {_textFormat2}
+				replace all " minutes " with "m" in {_textFormat2}
+				replace all " minute " with "m" in {_textFormat2}
+				replace all " seconds" with "s" in {_textFormat2}
+				replace all " second" with "s" in {_textFormat2}
+			else:
+				set {_textFormat2} to "n/a"
 			set {_total} to amount of {options::1::voters::*}+amount of {options::2::voters::*}+amount of {options::3::voters::*}
-			set score "&9" in sidebar of loop-player to 11
-			set score "&3results" in sidebar of loop-player to 10
-			set score "&cI: &f%round(amount of {options::1::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 9	
-			set score "&bII: &f%round(amount of {options::2::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 8
-			set score "&aIII: &f%round(amount of {options::3::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 7
-			set score "&f" in sidebar of loop-player to 6
-			set score "&3ends in" in sidebar of loop-player to 5
-			set score "&b%{_textFormat2}%" in sidebar of loop-player to 4	
-			set score "&2" in sidebar of loop-player to 3
+			set score "&9" in sidebar of loop-player to 12
+			set score "&3results" in sidebar of loop-player to 11
+			set score "&cI: &f%round(amount of {options::1::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 10	
+			set score "&bII: &f%round(amount of {options::2::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 9
+			set score "&aIII: &f%round(amount of {options::3::voters::*}/{_total}*100)+0%%%" in sidebar of loop-player to 8
+			set score "&f" in sidebar of loop-player to 7
+			{options::presidental} is true:
+				set {_total2} to amount of {options::president1::voters::*}+amount of {options::president2::voters::*}
+				set score "&3candidates" in sidebar of loop-player to 6
+				set score "&b##1: &f%round(amount of {options::president1::voters::*}/{_total2}*100)+0%%%" in sidebar of loop-player to 5	
+				set score "&b##2: &f%round(amount of {options::president2::voters::*}/{_total2}*100)+0%%%" in sidebar of loop-player to 4
+				set score "&d" in sidebar of loop-player to 3
+			set score "&3ends in" in sidebar of loop-player to 2
+			set score "&b%{_textFormat2}%" in sidebar of loop-player to 1
+			set score "&2" in sidebar of loop-player to 0
 		else:
 			set score "&1" in sidebar of loop-player to 6
 			{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
@@ -97,8 +123,6 @@ every second:
 				set score "&3next in" in sidebar of loop-player to 5
 			set score "&b%{_textFormat}%" in sidebar of loop-player to 4
 			set score "&2" in sidebar of loop-player to 2
-		
-		
 		
 command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
 	usage: &c/Scheduler <count/cancelFirstOne/next/nextpresident/clear/list/addElection/addElectionEZ/addElectionMonth/addPresidentalElection> <yr> <month> <day> <h> <m>
@@ -129,7 +153,7 @@ command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
 			remove {_b} from {scheduledElections::*}
 		arg-1 = "cancelFirstOnePresident":
 			set {_c} to first element of sorted {scheduledPresidentalElections::*}
-			remove {_c} from {scheduledElections::*}
+			remove {_c} from {scheduledPresidentalElections::*}
 		arg-1 = "cancel2ndOne":
 			set {_b} to 2nd element of {scheduledElections::*}
 			remove {_b} from {scheduledElections::*}
@@ -153,3 +177,7 @@ command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
 			arg-2, arg-3, and arg-4 is set
 			add date(arg-2, arg-3, arg-4, 19, 0) to {scheduledPresidentalElections::*}
 			send "&aScheduled a presidental election on %arg-2%-%arg-3%-%arg-4% @ 7pm."
+		arg-1 = "addPresidentalElectionCustomTime":
+			arg-2, arg-3, arg-4, arg-5 and arg-6 is set
+			add date(arg-2, arg-3, arg-4, arg-5, arg-6) to {scheduledPresidentalElections::*}
+			send "&aScheduled a presidental election on %arg-2%-%arg-3%-%arg-4% @ %arg-5%:%arg-6%."
