@@ -9,10 +9,16 @@ on load:
 	loop 20 times:
 		set {_n} to 20 minutes after now
 		set {_time} to first element of sorted {scheduledElections::*}
+		set {_time2} to first element of sorted {scheduledPresidentalElections::*}
 		now > {_time}:
 			remove {_time} from {scheduledElections::*}
 		else:
 			stop loop
+		now > {_time2}:
+			remove {_time} from {scheduledPresidentalElections::*}
+		else:
+			stop loop
+	
 
 on tab complete of "/vote":
 	player is op:
@@ -27,6 +33,10 @@ on tab complete of "/vote":
 on stop:
 	delete {votingoptions::*}
 	delete {options::*}
+	delete {options::electionTime}
+	{options::presidental} is true:
+		{options::dateInCasePresidentElectionFail} is not (first element of sorted {scheduledpresidentalElections::*}):
+			add {options::dateInCasePresidentElectionFail} to {scheduledpresidentalElections::*}
 	send "&aElections - Voting options deleted." to console
 	send "&aElections - If there was an election currently, it has been canceled." to console
 	
@@ -81,6 +91,8 @@ function generateElection(isPresidental: boolean):
 		set {options::3::name} to {_3}
 		set {options::3::type} to "approve"
 		set {options::3::guiSlot} to {optionsHead::3} named "&eProposal 3" with lore "%nl%&aApprove Initiative%nl%&7%{_3}%%nl%&7&o%{_3desc}%"
+	{_isPresidental} = true:
+		set {options::presidental} to true
 	
 command /Please-Do-Not-Change:iconVotingSet <number> <number>:
 	permission: *
@@ -160,6 +172,24 @@ command /endElections:
 					add 3 to {_lottery::*}
 				set {_winner} to random element out of {_lottery::*}
 				finalInitiativeElection("Two proposals have recieved the same amount of votes. As a result, Proposal ##%{_winner}% was randomly picked.", {_winner})
+		{options::presidental} = true:
+			{options::president1::name} is not set:
+				{options::dateInCasePresidentElectionFail} is not (first element of sorted {scheduledpresidentalElections::*}):
+					add {options::dateInCasePresidentElectionFail} to {scheduledpresidentalElections::*}
+				send "&3Because no one ran for president, there will be another presidental election scheduled for tomorrow at 7pm."
+				stop
+			{options::president1::name} is set:
+				{options::president2::name} is not set:
+					finalPresidentElection("%{options::president1::name}% ran unopposed and now is president.", 1)
+			amount of {options::president1::voters::*} = amount of {options::president2::voters::*}:
+				set {_winner} to random number between 1 and 2
+				finalPresidentElection("Two candidates recieved same amount of votes, so %{options::president%{_winner}%::name}% was randomly picked.", {_winner})
+			amount of {options::president1::voters::*} > amount of {options::president2::voters::*}:
+				finalPresidentElection("%{options::president1::name}% got the most votes and is now the president.", 1)
+			else:
+				finalPresidentElection("%{options::president2::name}% got the most votes and is now the president.", 2)
+		wait 5 seconds
+		delete {options::*}
 
 command /vote [<text>] [<text>] [<text>]:
 	aliases: v
@@ -167,7 +197,7 @@ command /vote [<text>] [<text>] [<text>]:
 		arg-1 is not set:
 			{options::1::guiSlot} or {options::2::guiSlot} or {options::3::guiSlot} is not set:
 				close player's inventory
-				send "&cThere is no elections going on currently."
+				send "&cThere is no elections going on currently.%nl%&cPerhaps you want to change your political party while you wait? (/party)"
 				stop
 			set {_item} to {options::1::guiSlot}
 			set {_item2} to {options::2::guiSlot} 
@@ -195,9 +225,15 @@ command /vote [<text>] [<text>] [<text>]:
 				add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item3}
 			open hopper inventory named "{@voting}" to player
 			set slot 0, 1, 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals")
-			set slot 1 of current inventory of player to {_item}
-			set slot 2 of current inventory of player to {_item2}
-			set slot 3 of current inventory of player to {_item3}
+			{options::presidental} = false:
+				set slot 1 of current inventory of player to {_item}
+				set slot 2 of current inventory of player to {_item2}
+				set slot 3 of current inventory of player to {_item3}
+			else:
+				set slot 0 of current inventory of player to jukebox named "&ePresidental Elections" with lore "%nl%&bCandidates:%nl%&7- %{options::president1::name}%%nl%&7- %{options::president2::name}%%nl%%nl%&eClick to vote..."
+				set slot 2 of current inventory of player to {_item}
+				set slot 3 of current inventory of player to {_item2}
+				set slot 4 of current inventory of player to {_item3}
 		arg-1 is set:
 			arg-1 = "list":
 				{activeLaws::*} is not set:
@@ -244,6 +280,8 @@ on inventory click:
 			event-slot is not 10
 			send "&cShift clicking is disabled!"
 		event-inventory is not inventory of player
+		name of event-slot = "&ePresidental Elections":
+			player command "/presidentVoteUI"
 		name of event-slot = "&eProposal 1":
 			{options::1::voters::*} or {options::2::voters::*} or {options::3::voters::*} contain "%player%":
 				stop
@@ -289,6 +327,16 @@ on inventory click:
 		"%{activeLaws::*}%" contains "snitch":
 			name of event-slot contains "&eProposal 1" or "&eProposal 2" or "&eProposal 3"
 			broadcast "&b%player% voted for %name of event-slot%&b!"
+
+function finalPresidentElection(x: text, n: number):
+	console command "pex user %{president}% group set default"
+	wait 10 ticks
+	broadcast "&3%{_x}%"
+	set {president} to {options::president%{_n}%::name}
+	set {presidentVotedInParty} to {party::%{options::president%{_n}%::name}%}
+	console command "pex user %{party::%{options::president%{_n}%::name}%}% group set President"
+	wait 10 ticks
+	send "%nl%%nl%&3&lCongrats on being president.%nl%To enact policies, command: &3/settings &for &3/policy" to {president}
 
 function finalInitiativeElection(x: text, n: number):
 	{options::%{_n}%::type} is set

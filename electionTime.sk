@@ -1,6 +1,7 @@
 
 every second:
 	set {_nextDate} to first element of sorted {scheduledElections::*}
+	set {_nextPresidentalDate} to first element of sorted {scheduledPresidentalElections::*}
 	set {_difference} to difference between {_nextDate} and now
 	set {_textFormat} to "%{_difference}%"
 	replace all " hours " with "h" in {_textFormat}
@@ -12,21 +13,64 @@ every second:
 	replace all "minute" with "m" in {_textFormat}
 	replace all " seconds" with "s" in {_textFormat}
 	replace all " second" with "s" in {_textFormat}
-	{_difference} < 1 second:
+	{_difference} < 6 hours:
+		{options::alert1} is not set
+		set {options::alert1} to true
+		broadcast "&bElections begin in 6 hours."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			broadcast "&3&l! &3A presidental election is coming up soon."
+	{_difference} < 3 hours:
+		{options::alert2} is not set
+		set {options::alert2} to true
+		broadcast "&bElections begin in 3 hours."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			broadcast "&3&l! &3Announcing your candidacy for president in the next one will be avaliable in the 1 hour mark."
+	{_difference} < 2 hours:
+		{options::alert2a} is not set
+		set {options::alert2a} to true
+		broadcast "&bElections begin in 2 hours."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			broadcast "&3&l! &3Announcing your candidacy for president will be avaliable in the 1 hour mark."
+	{_difference} < 1 hour:
+		{options::alert3} is not set
+		set {options::alert3} to true
+		broadcast "&bElections begin in 1 hour."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			set {options::announcePresidency} to true
+			broadcast "&3&l! &3You can now announce your candidacy for president with the command &l/iWantToBePresident &3&o(2 max)"
+	{_difference} < 30 minute:
+		{options::alert4} is not set
+		set {options::alert4} to true
+		broadcast "&bElections begin in 30 minutes."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
+	{_difference} < 5 minute:
+		{options::alert5} is not set
+		set {options::alert5} to true
+		broadcast "&bElections begin in 5 minutes."
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
+	{_difference} < 2 second:
+		set {options::dateInCasePresidentElectionFail} to 1 day after {_nextDate}
+		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+			remove {_nextDate} from {scheduledpresidentalElections::*}
 		remove {_nextDate} from {scheduledElections::*}
 		console command "vote callNewElection"
 		broadcast "<run command:/v>&3&l&k11111111111111111111111111111111111111%nl%%nl%<run command:/v>&bElections are open again!%nl%<run command:/v>&b&lCLICK HERE TO MAKE YOUR VOICE HEARD.%nl%%Nl%<run command:/v>&3&l&k11111111111111111111111111111111111111"
-		set {options::electionTime} to 1 minutes after now
 	loop all players:
+		{party::%loop-player%} is not set:
+			set {party::%loop-player%} to "&7Independent"
+		group of loop-player = "President":
+			set loop-player tab name to "&7[&l%{party::%loop-player%}%] %loop-player% &3✪"
+		else:
+			set loop-player tab name to "&7[&l%{party::%loop-player%}%] %loop-player%"
 		wipe loop-player's sidebar
 		set name of sidebar of loop-player to "&e&lvoting"
 		{options::1::guislot} is set:
 			set {_endTime} to difference between {options::electionTime} and now
 			{_endTime} < 1 second:
-				delete {options::*}
+				close loop-player's inventory
 				console command "/endelections"
-			{options::electionTime} is not set:
-				delete {options::*}
 			set {_textFormat2} to "%{_endTime}%"
 			replace all " hours " with "h" in {_textFormat2}
 			replace all " hour " with "h" in {_textFormat2}
@@ -47,13 +91,17 @@ every second:
 			set score "&2" in sidebar of loop-player to 3
 		else:
 			set score "&1" in sidebar of loop-player to 6
-			set score "&3next one in" in sidebar of loop-player to 5
-			set score "&b%{_textFormat}%" in sidebar of loop-player to 4	
-			set score "&2" in sidebar of loop-player to 3
+			{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
+				set score "&3next in &3✪" in sidebar of loop-player to 5
+			else:
+				set score "&3next in" in sidebar of loop-player to 5
+			set score "&b%{_textFormat}%" in sidebar of loop-player to 4
+			set score "&2" in sidebar of loop-player to 2
+		
 		
 		
 command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
-	usage: &c/Scheduler <count/cancelFirstOne/next/clear/list/addElection/addElectionEZ/addElectionMonth/addPresidentalElection> <yr> <month> <day> <h> <m>
+	usage: &c/Scheduler <count/cancelFirstOne/next/nextpresident/clear/list/addElection/addElectionEZ/addElectionMonth/addPresidentalElection> <yr> <month> <day> <h> <m>
 	trigger:
 		player is not op:
 			send "&cYou can't mess with elections, kid."
@@ -71,9 +119,17 @@ command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
 			set {_c} to 2nd element of {scheduledElections::*}
 			set {_d} to 3rd element of {scheduledElections::*}
 			send "&aNext one @ %{_b}%, %{_c}%, %{_d}%"
+		arg-1 = "nextpresident":
+			set {_b} to first element of sorted {scheduledPresidentalElections::*}
+			set {_c} to 2nd element of {scheduledPresidentalElections::*}
+			set {_d} to 3rd element of {scheduledPresidentalElections::*}
+			send "&aNext one @ %{_b}%, %{_c}%, %{_d}%"
 		arg-1 = "cancelFirstOne":
-			set {_b} to first element of {scheduledElections::*}
+			set {_b} to first element of sorted {scheduledElections::*}
 			remove {_b} from {scheduledElections::*}
+		arg-1 = "cancelFirstOnePresident":
+			set {_c} to first element of sorted {scheduledPresidentalElections::*}
+			remove {_c} from {scheduledElections::*}
 		arg-1 = "cancel2ndOne":
 			set {_b} to 2nd element of {scheduledElections::*}
 			remove {_b} from {scheduledElections::*}
