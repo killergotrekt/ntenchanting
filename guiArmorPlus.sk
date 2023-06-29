@@ -185,19 +185,19 @@ on left click with crossbow:
 	
 on projectile hit:
 	if projectile is an arrow:
-		shooter is player
-		set {_a} to level of blast protection of shooter's helmet
-		set {_b} to level of blast protection of shooter's chestplate
-		set {_c} to level of blast protection of shooter's leggings
-		set {_d} to level of blast protection of shooter's boots
-		{_a} or {_b} or {_c} or {_d} >= 4:
-			delete projectile
-			set {_strength} to 0.75+(({_a}+{_b}+{_c}+{_d})/8)
-			create explosion of force {_strength} at projectile
-		set {_infinity} to level of infinity of shooter's tool
-		{_infinity} >= 1:
-			chance of 50%:
-				remove 1 arrow from shooter's inventory
+		shooter is player:
+			set {_a} to level of blast protection of shooter's helmet
+			set {_b} to level of blast protection of shooter's chestplate
+			set {_c} to level of blast protection of shooter's leggings
+			set {_d} to level of blast protection of shooter's boots
+			{_a} or {_b} or {_c} or {_d} >= 4:
+				delete projectile
+				set {_strength} to 0.75+(({_a}+{_b}+{_c}+{_d})/8)
+				create explosion of force {_strength} at projectile
+			set {_infinity} to level of infinity of shooter's tool
+			{_infinity} >= 1:
+				chance of 50%:
+					remove 1 arrow from shooter's inventory
 			
 on shoot:
 	if projectile is an arrow:
@@ -209,7 +209,32 @@ on shoot:
 			set projectile on fire
 
 on damage:
+	"%attacker%" is "skeleton" or "stray": 
+		{activeLaws::*} contains "arsenalOfDemocracy"
+		set {_potioneffect} to round(random number between 0 and 7)
+		{_potioneffect} = 0:
+			create an explosion of force 1 at the victim
+		{_potioneffect} = 1:
+			apply swiftness 1 to the victim for 10 seconds
+		{_potioneffect} = 2:
+			apply haste 1 to the victim for 10 seconds
+		{_potioneffect} = 3:
+			apply wither 1 to the victim for 20 seconds
+		{_potioneffect} = 4:
+			apply mining fatigue 1 to the victim for 20 seconds
+		{_potioneffect} = 5:
+			apply strength 1 to the victim for 10 seconds
+		{_potioneffect} = 6:
+			apply poison 1 to the victim for 20 seconds
+		{_potioneffect} = 7:
+			apply instant damage 1 to the victim for 1 seconds
 	victim is player:
+		damage cause = lava:
+			{activeLaws::*} contains "lavaImmunity"
+			cancel event
+		damage cause = drowning:
+			{activeLaws::*} contains "drownNoProblem"
+			add 3 to damage
 		set {_1} to level of fire protection of victim's helmet
 		set {_2} to level of fire protection of victim's chestplate
 		set {_3} to level of fire protection of victim's leggings
@@ -228,6 +253,20 @@ on damage:
 			remove glowing from victim
 			apply glowing 1 to victim for 1 seconds
 	attacker is player:
+		victim is player:
+			{activeLaws::*} contains "cancelPVP"
+			cancel event
+			send action bar "&cYou can't PVP." to attacker
+			stop
+		attacker's tool = glass:
+			remove 1 of attacker's tool from attacker
+			create explosion of force 3 at victim
+		attacker's tool = glass pane:
+			remove 1 of attacker's tool from attacker
+			create explosion of force 2 at victim
+		attacker's tool = any bed:
+			remove 1 of attacker's tool from attacker
+			create explosion of force 4 at victim
 		damage cause is arrow:
 			set {_a} to level of projectile protection of attacker's helmet
 			set {_b} to level of projectile protection of attacker's chestplate
@@ -252,4 +291,10 @@ on damage:
 			set {_bonusfireatk2} to {_2}*0.05-0.05
 			set {_bonusfireatk3} to {_3}*0.05-0.05
 			set {_bonusfireatk4} to {_4}*0.05-0.05
-		set damage to damage*(1+{_bonusproj}+{_bonusfireatk1}+{_bonusfireatk2}+{_bonusfireatk3}+{_bonusfireatk4})
+		attacker's world = "world_the_end":
+			{activeLaws::*} contains "buffEnd"
+			set {_worldatk} to 0.15
+		attacker's world = "world_nether":
+			{activeLaws::*} contains "buffNether"
+			set {_worldatk} to 0.15
+		set damage to damage*(1+{_bonusproj}+{_bonusfireatk1}+{_bonusfireatk2}+{_bonusfireatk3}+{_bonusfireatk4})+{_worldatk}

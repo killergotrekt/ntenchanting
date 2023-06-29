@@ -1,6 +1,5 @@
 allOfTheCompleteOptions:
 - ageOfWonders
-#- ambushMobs
 - arsenalOfDemocracy
 - banAll
 - banFishing
@@ -11,7 +10,6 @@ allOfTheCompleteOptions:
 - blazingFury
 - boostJump
 - breakBedrock
-- buffEnderChests
 - buffEnd
 - buffIRS
 - buffNether
@@ -21,15 +19,14 @@ allOfTheCompleteOptions:
 - cancelStars
 - cancelSun
 - chargedCreepers
-- clusterBombs
 - deadlyWater
 - disableCrafting
 - disableItemDespawn
 - disableItemMend
 - disableNether
 - discriminateBedrockPlayers
-- dropEfficiencyBooks
 - dropSuperBlastProtectionBooks
+- dropSuperEfficiencyBooks
 - dropSuperFireProtectionBooks
 - dropSuperFortuneBooks
 - dropSuperKnockbackBooks
@@ -41,6 +38,7 @@ allOfTheCompleteOptions:
 - drownNoProblem
 - eatingTax
 - emeraldInflation
+- extendedReach
 - fishAnything
 - forceSmeltAllOres
 - forceVote
@@ -63,7 +61,6 @@ allOfTheCompleteOptions:
 - lowLightStrength
 - marryPlayers
 - maxMiningFortune
-- nerfEnderChests
 - newDayNewEffect
 - noEnchantArmor
 - noEnchantAxe
@@ -92,12 +89,10 @@ allOfTheCompleteOptions:
 - presidentWeatherPowers
 - preventFloatingTrees
 - randomLightningStrikes
-- randomTargets
 - showMobHPRemaining
 - snitch
 - stopAdvancedAnvils
 - strictVoterLaws
-- superDeadlySpikes
 - testingCarrotTheory
 - throneOfPresidency
 - throwArrows

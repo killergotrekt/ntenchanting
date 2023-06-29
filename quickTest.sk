@@ -38,6 +38,10 @@ command /party [<text>]:
 
 command /iwannabepresident [<text>]:
 	trigger:
+		{activeLaws::*} contains "discriminateBedrockPlayers":
+			"%player%" contains ".":
+				send "&cYou may not vote!"
+				stop
 		(first element of sorted {scheduledElections::*}) is not (first element of sorted {scheduledpresidentalElections::*}):
 			{options::presidental} is not true
 			send "&cThe next election does not contain a presidental election.%nl%<run command:/party>&cPerhaps you want to change your political party while you wait? (/party) or &lClick here to do so."
@@ -47,11 +51,17 @@ command /iwannabepresident [<text>]:
 			send "&cAnnouncing of presidency is not avaliable yet. (1 hour mark)"
 			stop
 		{president} = player:
+			{activeLaws::*} does not contain "presidentConsecutiveTerms"
 			send "&cYou can not run consecutive terms, but you can have unlimited non-consecutive terms."
 			stop
-		time played of player < 30 minutes:
-			send "&cThirty minutes of playtime is required to be president."
-			stop
+		{activeLaws::*} contains "strictVoterLaws":
+			time played of player < 120 minutes:
+				send "&cOne-hundred and twenty minutes of playtime is required to be president."
+				stop
+		else:
+			time played of player < 30 minutes:
+				send "&cThirty minutes of playtime is required to be president."
+				stop
 		arg-1 is not "confirm":
 			send "&3Are you sure you would like to run for president?%nl%&bRun &e/iwannabepresident confirm &bcommand again."
 			stop
@@ -89,6 +99,14 @@ command /presidentVoteUI:
 		{options::president1::name} is not set:
 			send "&cThe next election does not contain a presidental election.%nl%<run command:/party>&cPerhaps you want to change your political party while you wait? (/party) or &lClick here to do so."
 			stop
+		{activeLaws::*} contains "discriminateBedrockPlayers":
+			"%player%" contains ".":
+				send "&cYou may not vote!"
+				stop
+		{activeLaws::*} contains "strictVoterLaws":
+			time played of player < 120 minutes:
+				send "&cOne-hundred and twenty minutes of playtime is required to vote."
+				stop
 		open hopper inventory named "Presidental Elections" to player
 		{options::president1::name} is set:
 			set {_1} to ("%{options::president1::name}%" parsed as offline player)'s skull named "%{options::president1::name}%" with lore "&7%{party::%{options::president1::name}%}%%nl%%nl%&8%amount of {options::president1::voters::*}+0% votes"
@@ -124,10 +142,8 @@ on inventory click:
 		send "&9Your political party was switched to: %{party::%player%}%"
 		console command "nte player %player% prefix '[%{party::%player%}%] '"
 		name of event-slot = "&dWar Criminal":
-			set max health of player to 5
 			set player's walking speed to 0.3
 		else:
-			set max health of player to 10
 			set player's walking speed to 0.2
 	if name of event-inventory is "Presidental Elections":
 		cancel event
@@ -145,6 +161,8 @@ on inventory click:
 						add "%player%" to {options::president1::voters::*}
 			else:
 				add "%player%" to {options::president1::voters::*}
+			"%{activeLaws::*}%" contains "snitch":
+				broadcast "&b%player% voted for &eCandidate 1&b!"
 			close player's inventory
 			player command "/presidentVoteUI"
 		event-slot = 3:
@@ -162,6 +180,122 @@ on inventory click:
 				add "%player%" to {options::president2::voters::*}
 			close player's inventory
 			player command "/presidentVoteUI"
+			"%{activeLaws::*}%" contains "snitch":
+				broadcast "&b%player% voted for &eCandidate 1&b!"
+	if name of event-inventory is "Presidental Powers & Policies":
+		cancel event
+		event-inventory is not inventory of player
+		name of event-slot = "&cRepeal banAll":
+			make player run command "vote repeal banAll" as op
+			player command "settings"
+		name of event-slot = "&aApprove presidentElections":
+			make player run command "vote approve presidentElections" as op
+			player command "settings"
+		name of event-slot = "&aApprove initiativeElections":
+			make player run command "vote approve initiativeElections" as op
+			player command "settings"
+		name of event-slot = "&aApprove presidentEnslavePowers":
+			make player run command "vote approve presidentEnslavePowers" as op
+			player command "settings"
+		name of event-slot = "&aWorld Difficulty: Easy":
+			set the difficulty of "%player's world%" to normal
+			send action bar "&fNew Difficulty set to Normal." to all players
+			player command "settings"
+		name of event-slot = "&6World Difficulty: Normal":
+			set the difficulty of "%player's world%" to hard
+			send action bar "&fNew Difficulty set to Hard." to all players
+			player command "settings"
+		name of event-slot = "&cWorld Difficulty: Hard":
+			send action bar "&fNew Difficulty set to Easy." to all players
+			set the difficulty of "%player's world%" to easy
+			player command "settings"
+		name of event-slot = "&cPersonal Flight: False":
+			set flight mode of player to true
+			player command "settings"
+		name of event-slot = "&aPersonal Flight: True":
+			set flight mode of player to false
+			player command "settings"
+		name of event-slot = "&fVault":
+			give player {collectedItems::*}
+			delete {collectedItems::*}
+			player command "settings"
+		name of event-slot = "&aKeep Inventory: True":
+			set {keepInv} to false
+			send action bar "&fKeep Inventory set to false." to all players
+			player command "settings"
+		name of event-slot = "&cKeep Inventory: False":
+			send action bar "&fKeep Inventory set to true." to all players
+			set {keepInv} to true
+			player command "settings"
+		name of event-slot = "&aWorld Weather: Clear":
+			set weather in player's world to rain
+			send action bar "&fWeather was set to rain." to all players
+			player command "settings"
+		name of event-slot = "&6World Weather: Rain":
+			set weather in player's world to thunder
+			send action bar "&fWeather was set to thunder." to all players
+			player command "settings"
+		name of event-slot = "&cWorld Weather: thunder":
+			set weather in player's world to clear
+			send action bar "&fWeather was set to clear." to all players
+			player command "settings"
+		name of event-slot = "&aBomb Players":
+			player command "operationDesertStorm"
+	if name of event-inventory is "Pick a Victim to terrorize":
+		cancel event
+		event-inventory is not inventory of player
+		event-slot is not air
+		name of event-slot is not "&cBomb Strength":
+			{president} is player
+			"%{activeLaws::*}%" contain "operationDesertStorm"
+			set {_victim} to name of event-slot
+			replace all "&b" in {_victim} with ""
+			set {_victim} to {_victim} parsed as player
+			{_victim} is not online:
+				player command "/bomb"
+				send "&cThat player is no longer online."
+				stop
+			if player have gunpowder in inventory:
+				remove 1 gunpowder from player's inventory
+				create an explosion of force 0.8 at {_victim}
+				send action bar "&f%sender% &cis bombing &f%{_victim}%&c!" to all players
+			else if player have fire charge in inventory:
+				remove 1 fire charge from player's inventory
+				create an explosion of force 2.5 at {_victim}
+				send action bar "&f%sender% &cis bombing &f%{_victim}%&c!" to all players
+			else if player have tnt in inventory:
+				remove 1 tnt from player's inventory
+				create an explosion of force 4.5 at {_victim}
+				send action bar "&f%sender% &cis bombing &f%{_victim}%&c!" to all players
+			else if player have end crystal in inventory:
+				remove 1 end crystal from player's inventory
+				create an explosion of force 8 at {_victim}
+				send action bar "&f%sender% &cis bombing &f%{_victim}%&c!" to all players
+			else:
+				send "&cYou don't have any specific items to blow up players (see 'Bomb Strength')."
+		
+on death of a player:
+	{keepInv} = true:
+		keep the inventory and experiences
+
+command bomb [<text>]:
+	aliases: bombing, terrorize, operationDesertStorm
+	trigger:
+		{president} is not player:
+			send "&cYou are not the president."
+			stop
+		"%{activeLaws::*}%" contain "operationDesertStorm":
+			open chest inventory with 4 rows named "Pick a Victim to terrorize" to player
+			set {_slot} to 0
+			loop all players:
+				"%loop-value%" does not contain ".":
+					set slot {_slot} of current inventory of player to ("%loop-value%" parsed as offline player)'s skull named "&b%loop-value%" with lore "%nl%&eClick to blow this loser up."
+				else:
+					set slot {_slot} of current inventory of player to bedrock named "&b%loop-value%" with lore "%nl%&eClick to blow this loser up."
+				add 1 to {_slot}
+			set slot 35 of current inventory of player to redstone torch named "&cBomb Strength" with lore "&7Gunpowder &8- &f0.8%nl%&7TNT &8- &f4.5%nl%&7Fire Charge &8- &f2.5%nl%&7End Crystal &8- &f8"
+		else:
+			send "&cyou can't be a terrorist as the president yet."
 		
 command settings [<text>]:
 	aliases: policy, policies
@@ -170,3 +304,109 @@ command settings [<text>]:
 			send "&cYou are not the president."
 			stop
 		open chest inventory with 4 rows named "Presidental Powers & Policies" to player
+		"%{activeLaws::*}%" contain "presidentDifficultyPowers":
+			"%event-world's difficulty%" = "easy":
+				set slot 0 of current inventory of player to lime wool named "&aWorld Difficulty: Easy" with lore "%nl%&eClick to switch."
+			else if "%event-world's difficulty%" = "hard":
+				set slot 0 of current inventory of player to red wool named "&cWorld Difficulty: Hard" with lore "%nl%&eClick to switch."
+			else:
+				set slot 0 of current inventory of player to yellow wool named "&6World Difficulty: Normal" with lore "%nl%&eClick to switch."
+		"%{activeLaws::*}%" contain "presidentFlightPowers":
+			"%flying state of player%" = "false":
+				set slot 1 of current inventory of player to red wool named "&cPersonal Flight: False" with lore "%nl%&eClick to switch."
+			else:
+				set slot 1 of current inventory of player to lime wool named "&APersonal Flight: True" with lore "%nl%&eClick to switch."
+		"%{activeLaws::*}%" contain "presidentEnslavePowers":
+			set slot 2 of current inventory of player to lime wool named "&AEnslave Players" with lore "%nl%&eTo enslave, run command%nl%&e/enslave <player>"
+		"%{activeLaws::*}%" contain "presidentkeepInvPowers":
+			{keepInv} is not set:
+				set {keepInv} to false
+			{keepInv} = false:
+				set slot 3 of current inventory of player to red wool named "&cKeep Inventory: False" with lore "%nl%&eClick to switch."
+			else:
+				set slot 3 of current inventory of player to lime wool named "&aKeep Inventory: True" with lore "%nl%&eClick to switch."
+		"%{activeLaws::*}%" contain "presidentKickPowers":
+			set slot 4 of current inventory of player to lime wool named "&AKick Players" with lore "%nl%&eTo kick, run command%nl%&e/kick <player>"
+		"%{activeLaws::*}%" contain "presidentWeatherPowers":
+			"%event-world's weather%" = "clear":
+				set slot 5 of current inventory of player to lime wool named "&aWorld Weather: Clear" with lore "%nl%&eClick to switch."
+			"%event-world's weather%" = "rain":
+				set slot 5 of current inventory of player to yellow wool named "&6World Weather: Rain" with lore "%nl%&eClick to switch."
+			"%event-world's weather%" = "thunder":
+				set slot 5 of current inventory of player to red wool named "&cWorld Weather: Thunder" with lore "%nl%&eClick to switch."
+		"%{activeLaws::*}%" contain "presidentTeleportPowers":
+			set slot 6 of current inventory of player to lime wool named "&ATeleport to Players" with lore "%nl%&eTo tp to players, run command%nl%&e/tp <player>"
+		"%{activeLaws::*}%" contain "presidentSearchPowers":
+			set slot 7 of current inventory of player to lime wool named "&ASearch Players" with lore "%nl%&eTo search players, run command%nl%&e/search <player>"
+		"%{activeLaws::*}%" contain "operationDesertStorm":
+			set slot 8 of current inventory of player to tnt named "&ABomb Players" with lore "%nl%&eClick to pick victims..."
+		"%{activeLaws::*}%" contain "presidentMiliaryPowers":
+			set slot 9 of current inventory of player to lime wool named "&ASentinels" with lore "%nl%&eClick to hire..."
+		"%{activeLaws::*}%" contain "presidentkeepInvPowers":
+			{presidentForceShield} is not set:
+				set {presidentForceShield} to false
+			{presidentForceShield} = false:
+				set slot 10 of current inventory of player to red wool named "&cForcefield Shield: False" with lore "%nl%&eClick to switch."
+			else:
+				set slot 10 of current inventory of player to lime wool named "&aForcefield Shield: True" with lore "%nl%&eClick to switch."
+		set slot 33 of current inventory of player to iron door named "&fVault" with lore "&8%amount of {collectedItems::*}%+ stacks uncollected%nl%%nl%&7Where collected taxes or%nl%&7enslaved items are stored.%nl%%nl%&eClick to collect all."
+		"%{activeLaws::*}%" contain "banAll":
+			set slot 27 of current inventory of player to barrier named "&cRepeal banAll" with lore "%nl%&8This cannot be undone.%nl%&eClick to confirm."
+		"%{activeLaws::*}%" does not contain "presidentElections":
+			set slot 28 of current inventory of player to barrier named "&aApprove presidentElections" with lore "%nl%&8This cannot be undone.%nl%&eClick to confirm."
+		"%{activeLaws::*}%" does not contain "initiativeElections":
+			set slot 29 of current inventory of player to barrier named "&aApprove initiativeElections" with lore "%nl%&8This cannot be undone.%nl%&eClick to confirm."
+		"%{activeLaws::*}%" does not contain "presidentEnslavePowers":
+			{presidentVotedInParty} = "&dWar Criminal"
+			set slot 30 of current inventory of player to barrier named "&aApprove presidentEnslavePowers" with lore "&8&oSecret Power.%nl%%nl%&8This cannot be undone.%nl%&eClick to confirm."
+		"%{activeLaws::*}%" does not contain "presidentOverrideElectionsPowers":
+			set slot 34 of current inventory of player to barrier named "&aOverride Initiative Elections Results" with lore "%nl%&eChoose new winner..."
+		"%{activeLaws::*}%" does not contain "overturnElections":
+			set slot 35 of current inventory of player to barrier named "&aOverturn Presidental Elections" with lore "%nl%&eChoose new winner..."
+		
+command kick <player> [<text>]:
+	usage: &c/kick <player>
+	aliases: president:kick, kickpresident
+	trigger:
+		{president} = "%player%":
+			"%{activeLaws::*}%" contain "presidentKickPowers":
+				arg-1 is not player
+				arg-1 is not op
+				arg-2 is not set:
+					kick arg-1 due to "You have been kicked by the President."
+				arg-2 is set:
+					player is op
+					kick arg-1 due to colored arg-2
+			else:
+				send "&cwhere power to kick???"
+		else:
+			send "&cur not the president L bozo"
+			
+command tp <player>:
+	usage: &c/tp <player>
+	aliases: president:tp, tppresident
+	trigger:
+		{president} = "%player%":
+			"%{activeLaws::*}%" contain "presidentTeleportPowers":
+				arg-1 is not player
+				arg-1 is not op
+				teleport player to arg
+			else:
+				send "&cwhere power to kick???"
+		else:
+			send "&cur not the president L bozo"
+			
+command search <offlineplayer>:
+	usage: &c/search <player>
+	aliases: president:search, searchpresident
+	trigger:
+		{president} = "%player%":
+			"%{activeLaws::*}%" contain "presidentTeleportPowers":
+				arg-1 is not player
+				arg-1 is not op
+				arg-1 is online:
+					open the arg-1's inventory for the player
+			else:
+				send "&cwhere power to kick???"
+		else:
+			send "&cur not the president L bozo"

@@ -1,0 +1,88 @@
+command /customhelmet:
+	permission: *
+	trigger:
+		set {_item1} to leather helmet named "&aRejuvenation Helmet" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+		dye {_item1} (0, 217, 11)
+		set {_1} to nbt compound of {_item1}
+		set tag "tag;Leaflet" of {_1} to 1
+		give player {_item1}
+		set {_item2} to leather chestplate named "&aRejuvenation Chestplate" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+		dye {_item2} (0, 217, 11)
+		set {_2} to nbt compound of {_item2}
+		set tag "tag;Leaflet" of {_2} to 1
+		give player {_item2}
+		set {_item3} to leather leggings named "&aRejuvenation Leggings" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+		dye {_item3} (0, 217, 11)
+		set {_3} to nbt compound of {_item3}
+		set tag "tag;Leaflet" of {_3} to 1
+		give player {_item3}
+		set {_item4} to leather boots named "&aRejuvenation Boots" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+		dye {_item4} (0, 217, 11)
+		set {_4} to nbt compound of {_item4}
+		set tag "tag;Leaflet" of {_4} to 1
+		give player {_item4}
+		
+on load:
+	set {_any.leaf} to material choice of every leaves
+	set {_item1} to leather helmet named "&aRejuvenation Helmet" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+	dye {_item1} (0, 217, 11)
+	set {_1} to nbt compound of {_item1}
+	set tag "tag;Leaflet" of {_1} to 1
+	register new shaped recipe for {_item1} using {_any.leaf}, {_any.leaf}, {_any.leaf}, {_any.leaf}, air, {_any.leaf}, air, air and air with id "ntEnchanting:leaflet_helmet"
+	register new shaped recipe for {_item1} using {_any.leaf}, {_any.leaf}, {_any.leaf}, air, leather cap, air, air, air and air with id "ntEnchanting:leaflet_helmet_alt_recipe"
+	set {_item2} to leather chestplate named "&aRejuvenation Chestplate" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+	dye {_item2} (0, 217, 11)
+	set {_2} to nbt compound of {_item2}
+	set tag "tag;Leaflet" of {_2} to 1
+	register new shaped recipe for {_item2} using {_any.leaf}, air, {_any.leaf}, {_any.leaf}, {_any.leaf}, {_any.leaf}, {_any.leaf}, {_any.leaf} and {_any.leaf} with id "ntEnchanting:leaflet_chestplate"
+	register new shaped recipe for {_item2} using {_any.leaf}, {_any.leaf}, {_any.leaf}, air, leather chestplate, air, air, air and air with id "ntEnchanting:leaflet_chestplate_alt_recipe"
+	set {_item3} to leather leggings named "&aRejuvenation Leggings" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+	dye {_item3} (0, 217, 11)
+	set {_3} to nbt compound of {_item3}
+	set tag "tag;Leaflet" of {_3} to 1
+	register new shaped recipe for {_item3} using {_any.leaf}, {_any.leaf}, {_any.leaf}, {_any.leaf}, air, {_any.leaf}, {_any.leaf}, air and {_any.leaf} with id "ntEnchanting:leaflet_leggings"
+	register new shaped recipe for {_item3} using {_any.leaf}, {_any.leaf}, {_any.leaf}, air, leather leggings, air, air, air and air with id "ntEnchanting:leaflet_leggings_alt_recipe"
+	set {_item4} to leather boots named "&aRejuvenation Boots" with lore "%nl%&ePower: Self-Regenerate%nl%&7Use leaves to prevent%nl%&7armor damage.%nl%%nl%&ePower: Health Buff%nl%&7Keep leaves in inventory%nl%&7to increase max health cap.%nl%&8Stacks with other pcs.%nl%&8Limited at 512."
+	dye {_item4} (0, 217, 11)
+	set {_4} to nbt compound of {_item3}
+	set tag "tag;Leaflet" of {_4} to 1
+	register new shaped recipe for {_item4} using {_any.leaf}, air, {_any.leaf}, {_any.leaf}, air, {_any.leaf}, air, air and air with id "ntEnchanting:leaflet_boots"
+	register new shaped recipe for {_item4} using {_any.leaf}, {_any.leaf}, {_any.leaf}, air, leather boots, air, air, air and air with id "ntEnchanting:leaflet_boots_alt_recipe"
+		
+item damage:
+	set {_a} to tag "tag;Leaflet" of nbt compound of event-item
+	{_a} is set:
+		player's inventory contains 2 of any leaves:
+			cancel event
+			remove 2 of any leaves from player's inventory
+			
+every second:
+	loop all players:
+		set {_hp.%loop-player%} to 10
+		{party::%loop-player%} = "&dWar Criminal":
+			remove 5 from {_hp.%loop-player%}
+		set {_a} to tag "tag;Leaflet" of nbt compound of loop-player's helmet
+		{_a} is set:
+			add 0.5 to {_mx}
+		set {_b} to tag "tag;Leaflet" of nbt compound of loop-player's chestplate
+		{_b} is set:
+			add 0.5 to {_mx}
+		set {_c} to tag "tag;Leaflet" of nbt compound of loop-player's leggings
+		{_c} is set:
+			add 0.5 to {_mx}
+		set {_d} to tag "tag;Leaflet" of nbt compound of loop-player's boots
+		{_d} is set:
+			add 0.5 to {_mx}
+		set {_leaves} to amount of any leaves in loop-player's inventory
+		{_leaves} > 512:
+			set {_leaves} to 512
+		set {_leaf.hp.bonus} to {_mx}*({_leaves}/32)
+		set loop-player's max health to {_hp.%loop-player%}+{_leaf.hp.bonus}
+		
+on left click:
+	player's tool = any sword:
+		{activeLaws::*} contains "extendedReach"
+		target entity is not dropped item
+		distance between target entity and player is less than or equal to 11
+		play sweep attack at blocks between target entity and player
+		make player attack target entity

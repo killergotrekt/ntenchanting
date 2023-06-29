@@ -14,6 +14,8 @@ on right click on enchanting table:
 		loop all blocks in radius 2.5 around event-block:
 			if loop-block contains bookshelf:
 				add 1 to {_power}
+		{activeLaws::*} contains "bigBrain":
+			add 15 to {_power}
 		enchantingTableUI(player, 1, {_power})
 
 function enchantingTableUI(p: player, n: number, power: number):
@@ -25,12 +27,15 @@ function enchantingTableUI(p: player, n: number, power: number):
 	set slot 37 of {_p}'s current inventory to bookshelf named "&dEnchanting Power: &f%{_power}+0%" with lore "%nl%&7Higher number, more%nl%&7enchantments avaliable.%nl%%nl%&8HINT: Bookshelves should%nl%&8be surrounding this table!"
 	set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to gray dye named "&cNo Item" with lore "&7Place an item to reveal contents.%nl%&7Or re-place item in slot."
 	"{@advancedAnvil}" = "true":
+		{activeLaws::*} does not contain "stopAdvancedAnvils"
 		{_power} >= 25:
 			set slot 28 of {_p}'s current inventory to glowing anvil named "&5Advanced Anvil" with lore "&8Require 25+ E-Power.%nl%%nl%&7Unlock more powerful%nl%&7enchantments beyond%nl%&7the normal limits.%nl%%nl%&eClick to access."
 		else:
 			set slot 28 of {_p}'s current inventory to glowing anvil named "&5Advanced Anvil" with lore "&8Require 25+ E-Power.%nl%%nl%&7Unlock more powerful%nl%&7enchantments beyond%nl%&7the normal limits.%nl%%nl%&cLOCKED."
 	{_n} = 2:
 		set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to barrier named "&cInvalid Item" with lore "&7This item cannot be modified!"
+	{_n} = 3:
+		set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to red dye named "&4Unable to Accept" with lore "&7A rule is preventing this item%nl%&7from being enchanted."
 
 on inventory click:
 	if name of event-inventory is "{@enchantingMenuScreen}":
@@ -41,8 +46,12 @@ on inventory click:
 		loop all blocks in radius 2.5 around player's target block:
 			if loop-block contains bookshelf:
 				add 1 to {_power}
+		{activeLaws::*} contains "bigBrain":
+			add 15 to {_power}
 		event-slot = 28:
 			"{@advancedAnvil}" = "true"
+			{activeLaws::*} contain "stopAdvancedAnvils":
+				add -1000 to {_power}
 			{_power} >= 25:
 				give player slot 10 of player's current inventory
 				set slot 10 of player's current inventory to air
@@ -51,20 +60,38 @@ on inventory click:
 			event-inventory is not inventory of player
 			cursor slot of player is any sword:
 				wait 1 ticks
-				enchantingTableSwordUI(player, {_power})
+				{activeLaws::*} contains "noEnchantSword":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableSwordUI(player, {_power})
 			else if cursor slot of player is any pickaxe or any shovel or any hoe:
 				wait 1 ticks
 				enchantingTableToolsUI(player, {_power})
 			else if cursor slot of player is any axe:
-				enchantingTableToolsAxeUI(player, {_power})
+				{activeLaws::*} contains "noEnchantAxe":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableToolsAxeUI(player, {_power})
 			else if cursor slot of player is any helmet:
-				enchantingTableArmorUI(player, {_power}, "helmet")
+				{activeLaws::*} contains "noEnchantArmor":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableArmorUI(player, {_power}, "helmet")
 			else if cursor slot of player is any chestplate:
-				enchantingTableArmorUI(player, {_power}, "chestplate")
+				{activeLaws::*} contains "noEnchantArmor":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableArmorUI(player, {_power}, "chestplate")
 			else if cursor slot of player is any leggings:
-				enchantingTableArmorUI(player, {_power}, "leggings")
+				{activeLaws::*} contains "noEnchantArmor":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableArmorUI(player, {_power}, "leggings")
 			else if cursor slot of player is any boots:
-				enchantingTableArmorUI(player, {_power}, "boots")
+				{activeLaws::*} contains "noEnchantArmor":
+					enchantingTableUI(player, 3, {_power})
+				else:
+					enchantingTableArmorUI(player, {_power}, "boots")
 			else if cursor slot of player is bow:
 				wait 1 ticks
 				enchantingTableBowUI(player, {_power})

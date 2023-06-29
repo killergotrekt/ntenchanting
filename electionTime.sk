@@ -3,6 +3,12 @@ on join:
 		player does not contain "%{options::1::voters::*}%" or "%{options::2::voters::*}%" or "%{options::3::voters::*}%"
 		wait 1 second
 		send "%nl%<run command:/v>&bHey, it doesn't seem like you voted yet. &lClick on this message to make your voice heard."
+	{president} = "%player%":
+		wait 1 second
+		send "%nl%<run command:/settings>&bWelcome back, President. You can change policies by clicking here, or by running command &3&l/policies"
+	"%player%" contains {presidentEnslaved::*}:
+		wait 1 second
+		send "&c&lWARNING! &eYou have been enslaved by the President, %{president}%. Any valuable items picked up, will be given to president. You may be un-enslaved either by the president directly, or the next presidental term."
 	
 on tab complete of "/scheduler":
 	player is op:
@@ -126,10 +132,8 @@ every second:
 		
 command scheduler <text> [<number>] [<number>] [<number>] [<number>] [<number>]:
 	usage: &c/Scheduler <count/cancelFirstOne/next/nextpresident/clear/list/addElection/addElectionEZ/addElectionMonth/addPresidentalElection> <yr> <month> <day> <h> <m>
+	permission: *
 	trigger:
-		player is not op:
-			send "&cYou can't mess with elections, kid."
-			stop
 		arg-1 = "clear":
 			delete {scheduledElections::*}
 			send "Cleared all upcoming."

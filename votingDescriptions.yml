@@ -1,5 +1,4 @@
 ageOfWonders: for no-nonsense players who wants to be efficient
-ambushMobs: sneaky sneaky... mobs can't see you, or do they?
 arsenalOfDemocracy: Skeleton arrows apply random effect, including explosions
 banAll: ban all players from the server
 banFishing: Presidental Order No. 533 - Conservation of Nemo.
@@ -10,7 +9,6 @@ bigBrain: gain +15 Enchanting Power
 blazingFury: blaze's rods ejaculate fireballs
 boostJump: this is not AW?
 breakBedrock: defying physics, one at a time
-buffEnderChests: adds 3 rows for echests
 buffEnd: end mob/player damage increased by 1.5x
 buffIRS: IRS takes more + more frequent harassment
 buffNether: mob/player damage increased by 1.5x
@@ -20,14 +18,13 @@ cancelPVP: cancel culture gone too far?
 cancelStars: screw the night
 cancelSun: twitter has fucked the sun now
 chargedCreepers: charged creepers drop diamonds
-clusterBombs: explosions cause more explosions
 deadlyWater: whater will kill you, don't... go... in...
 disableCrafting: the age of illiteracy has begun
 disableItemDespawn: your items stay in the world forever
 disableItemMend: no. don't let some xp repair your item. DO IT YOURSELF!
 disableNether: stop. progression. control.
 discriminateBedrockPlayers: ban them from voting
-dropEfficiencyBooks: efficiency 6-10 books can be dropped
+dropSuperEfficiencyBooks: efficiency 6-10 books can be dropped
 dropSuperBlastProtectionBooks: blast prot 5-10 books can be dropped
 dropSuperFireProtectionBooks: fire prot 5-10 books can be dropped
 dropSuperFortuneBooks: fortune 4-5 books can be dropped
@@ -35,11 +32,12 @@ dropSuperKnockbackBooks: knockback 3-5 books can be dropped
 dropSuperPowerBooks: power 6-10 books can be dropped
 dropSuperProjProtectionBooks: proj prot 5-10 books can be dropped
 dropSuperProtectionBooks: prot 5-10 books can be dropped
-dropSuperSharpnessBooks: sharp 5-10 books can be dropped
+dropSuperSharpnessBooks: sharp 6-10 books can be dropped
 dropSuperUnbreakingBooks: unbreaking 4-7 books can be dropped
 drownNoProblem: if you're drowning, just give up
 eatingTax: the government too is hungry
 emeraldInflation: CRASH THE EMERALD MARKET!!!
+extendedReach: extend minecraft's reach to 10 blocks for attacking (swords)
 fishAnything: anything can be fished!
 forceSmeltAllOres: all ores must be smelted
 forceVote: make every player online vote, if they want to do so or not
@@ -57,17 +55,16 @@ IRS: What's more capitalistic than giving items to el president
 knockbackToTheFuture: insane knockback for those who want em
 lagSpikes: i'm sorry, we're facing some difficulties rn...
 lavaImmunity: swim in lava without problems
-leafletArmor: new unbreakable armor! craft just like all other armor but with leaf.
+leafletArmor: new armor! recipe just like other armor - but with leaves
 losPolloHermanos: don't trust the cooked chicken or grass
 lowLightStrength: do more damage in low light areas
 marryPlayers: awwwwwwwwwwwwwwwwwwwwww. /marry
 maxMiningFortune: Gain +100 ☘ Mining Fortune
-nerfEnderChests: removes 2 rows for echests
 newDayNewEffect: random 5m effect per mc day
 noEnchantArmor: You can't enchant armor anymore.
 noEnchantAxe: You can't enchant axes anymore.
 noEnchantSword: You can't enchant swords anymore.
-noU: Shields reflect all damage back to attacker. HA!
+noU: Shields reflect half damage back to attacker. HA!
 ntEnchanting: New enchanting system. Don't repeal. Please.
 oneMinuteOneItem: every minute, one random item will be given to every1
 operationDesertStorm: obliterate your political enemies
@@ -87,16 +84,14 @@ presidentKickPowers: kick players from server
 presidentMiliaryPowers: deploy trained men for defense
 presidentOverrideElectionsPowers: final say to initiative being passed/denied
 presidentSearchPowers: president can look through inventory
-presidentTeleportPowers: allows president to tp to players (needs permission)
+presidentTeleportPowers: allows president to tp to players 
 presidentWeatherPowers: president controls the weather
 preventFloatingTrees: gets rid of ugly bushes in the air
 randomLightningStrikes: curse random player with a lightin' strike
-randomTargets: experimental tech. don't recommend pass.
 showMobHPRemaining: shows mobs health points left on atk
 snitch: votes are no longer annoymous
 stopAdvancedAnvils: Stop combining superenchants together.
 strictVoterLaws: require 2 hours of playtime to vote
-superDeadlySpikes: pointy blocks will kill. ouch!
 testingCarrotTheory: do eating carrots make you see better?
 throneOfPresidency: killing the president gives you the presidency
 throwArrows: tell that skellengton to eat shit

@@ -1,0 +1,115 @@
+command /debt <offlineplayer> <number>:
+	trigger:
+		changeDebt(arg-1, arg-2)
+		
+command /enslave <offlineplayer>:
+	usage: &c/enslave <player>
+	trigger:
+		{president} = "%player%":
+			arg is not player
+			"%{activeLaws::*}%" contain "presidentEnslavePowers":
+				"%arg-1%" does not contain {presidentEnslaved::*}:
+					add "%arg-1%" to {presidentEnslaved::*}
+					send "&aYou have enslaved %arg-1%." to sender
+					send "&c&lWARNING! &eYou have been enslaved by the President, %{president}%. Any valuable items picked up, will be given to president. You may be un-enslaved either by the president directly, or the next presidental term." to arg
+					changeDebt(arg-1, 150000000)
+					stop
+				else:
+					send "&aYou are no longer enslaving %arg-1%." to sender
+					send "&aYou have no longer enslaved by the President, %{president}%." to arg
+					remove "%arg-1%" from {presidentEnslaved::*}
+					changeDebt(arg-1, -150000000)
+			else:
+				send "&cu have no power to enslave people"
+		else:
+			send "&cur not president!!!!"
+		
+function reduceDebt(p: player, a: number):
+	add {_a} to {debtpaid::%{_p}%}
+	{debtpaid::%{_p}%} >= {debt::%{_p}%}:
+		delete {debt::%{_p}%}
+		delete {debtpaid::%{_p}%}
+		remove bossbar "%{_p}%.debt"
+
+function changeDebt(p: player, a: number):
+	add {_a} to {debt::%{_p}%}
+	if {debt::%{_p}%} <= 0:
+		delete {debt::%{_p}%}
+		delete {debtpaid::%{_p}%}
+		remove bossbar "%{_p}%.debt"
+		
+every second:
+	loop all players:
+		{debt::%loop-player%} is set:
+			set {_.%loop-player%.percent} to ({debtpaid::%loop-player%}+0)/{debt::%loop-player%}*100
+			create bossbar titled "&cDebt (&a$%{debtpaid::%loop-player%}+0% paid&c/&a$%{debt::%loop-player%}+0% owed&c)" and id "%loop-player%.debt" for loop-player with progress {_.%loop-player%.percent} with colors red
+			set bossbar "%loop-player%.debt" style to segmented 20
+
+on player trade:
+	{activeLaws::*} contains "wealthTax":
+		changeDebt(player, 3)
+		
+on right click on furnace:
+	{activeLaws::*} contains "wealthTax":
+		changeDebt(player, 0.5)
+		
+on respawn:
+	{activeLaws::*} contains "wealthTax":
+		changeDebt(player, 1)
+
+on consume:
+	{activeLaws::*} contains "wealthTax":
+		changeDebt(player, 2)
+	{activeLaws::*} contains "poisonousFood":
+		apply poison to player for 3 seconds
+
+on any movement:
+	{activeLaws::*} contains "walkingTax":
+		add 1 to {walkdistance::%player%}
+		set {_a} to {walkdistance::%player%}/({walkdistance::%player%}+3000)*100
+		{_a} < 70:
+			stop
+		else:
+			set {_chance} to {_a}-70
+			chance of {_chance}%:
+				set {walkdistance::%player%} to 0
+				set {_debt} to 50
+				changeDebt(player, {_debt})
+				send "&6You walked too far and now required to pay a tax."
+				
+on pickup:
+	{debt::%player%} is set:
+		event-dropped item = dropped diamond:
+			set {_price} to 8
+			loop item amount of event-item times:
+				add diamond to {collectedItems::*}
+		else if event-dropped item = dropped stone or dropped cobblestone:
+			set {_price} to 1
+		else if event-dropped item = dropped lapis lazuli or dropped redstone:
+			set {_price} to 1.5
+		else if event-dropped item = dropped raw gold or dropped raw iron:
+			set {_price} to 3
+		else if event-dropped item = dropped any log:
+			set {_price} to 1
+		else if event-dropped item = dropped any planks:
+			set {_price} to 0.25
+		else if event-dropped item = dropped nether quartz or dropped raw copper:
+			set {_price} to 2
+		else if event-dropped item = dropped gold nuggets:
+			set {_price} to 0.375
+		else if event-dropped item = dropped any wool:
+			set {_price} to 2
+		else if event-dropped item = dropped any carpet:
+			set {_price} to 0.75
+		else if event-dropped item = dropped any leaves:
+			set {_price} to 0.75
+		else if event-dropped item = dropped ancient debris:
+			set {_price} to 15
+		else:
+			stop
+		add item amount of event-item of event-item to {collectedItems::*}
+		cancel event
+		set {_profit} to (item amount of event-item)*{_price}
+		delete (event-dropped item)
+		reduceDebt(player, {_profit})
+		

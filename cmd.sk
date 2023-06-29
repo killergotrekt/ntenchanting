@@ -13,6 +13,28 @@ init:
 		add loop-value to {shovel::*} if loop-value is {@shovel}
 
 on mine:
+	"%past event-block%" contains "ore":
+		add 1 to {magicalBookLuckChance::%player%::ore}
+		{activeLaws::*} contains "dropSuperEfficiencyBooks":
+			add "efficiency" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperFortuneBooks":
+			add "fortune" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperUnbreakingBooks":
+			add "unbreaking" to {_pullList::*}
+		set {_chance} to ({magicalBookLuckChance::%player%::ore}/({magicalBookLuckChance::%player%::ore}+325))*100
+		chance of {_chance}%
+		{_pullList::*} is set
+		set {_random} to random element out of {_pullList::*}
+		{_random} = "efficiency":
+			set {_rando} to round(random number between 6 and 10)
+			magicalBook(player, "Efficiency", {_rando}, "publicDrop")
+		{_random} = "fortune":
+			set {_rando} to round(random number between 4 and 5)
+			magicalBook(player, "Fortune", {_rando}, "publicDrop")
+		{_random} = "unbreaking":
+			set {_rando} to round(random number between 4 and 7)
+			magicalBook(player, "Unbreaking", {_rando}, "publicDrop")
+		set {magicalBookLuckChance::%player%::ore} to 0
 	{activeLaws::*} contains "ageOfWonders":
 		veinMine(event-block, player) if tool is any pickaxe
 		veinMine(event-block, player) if tool is any axe
@@ -33,5 +55,692 @@ function veinMine(b: block, p: player):
 		break loop-block
 		damage tool of {_p} by 1
 		veinMine(loop-block, {_p})
+
+on jump:
+	{activeLaws::*} contains "cancelJump":
+		cancel event
+		stop
+	{activeLaws::*} contains "boostJump":
+		wait 1 ticks
+		set {_4} to level of feather falling of player's boots*0.1
+		push the player up at speed 0.2+{_4}
 		
+every 30 minutes:
+	{activeLaws::*} = "IRS":
+		add 1 to {fuckTaxesTime}
+		{activeLaws::*} contains "buffIRS":
+			{fuckTaxesTime} = 1
+		else:
+			{fuckTaxesTime} = 2
+		delete {fuckTaxesTime}
+		loop all players:
+			{activeLaws::*} contains "buffIRS":
+				if loop-player have 4 diamonds in inventory:
+					remove 4 diamonds from loop-player
+					send "&eThe IRS has taken 4 diamonds away from you. Praise el Presidente!" to loop-player
+				if loop-player have 11 raw iron in inventory:
+					remove 11 raw iron from loop-player
+					send "&eThe IRS has taken 11 raw iron away from you. Praise el Presidente!" to loop-player
+				if loop-player have 11 iron ingots in inventory:
+					remove 11 iron ingots from loop-player
+					send "&eThe IRS has taken 11 iron ingots away from you. Praise el Presidente!" to loop-player
+				else:
+					send "&eIt's tax timw! Because the IRS could not find diamond/iron in your inventory, you are in debt. To clear the debt, you'll need to pick up $35 worth of items." to loop-player
+					changeDebt(loop-player, 35)
+				stop
+			if loop-player have 2 diamonds in inventory:
+				remove 2 diamonds from loop-player
+				send "&eThe IRS has taken 2 diamonds away from you. Praise el Presidente!" to loop-player
+			if loop-player have 7 raw iron in inventory:
+				remove 7 raw iron from loop-player
+				send "&eThe IRS has taken 7 raw iron away from you. Praise el Presidente!" to loop-player
+			if loop-player have 7 iron ingots in inventory:
+				remove 7 iron ingots from loop-player
+				send "&eThe IRS has taken 7 iron ingots away from you. Praise el Presidente!" to loop-player
+			else:
+				send "&eIt's tax timw! Because the IRS could not find diamond/iron in your inventory, you are in debt. To clear the debt, you'll need to pick up $20 worth of items." to loop-player
+				changeDebt(loop-player, 20)
+			
+command /taxWindFall:
+	permission: *
+	trigger:
+		loop all players:
+			{activeLaws::*} contains "buffIRS":
+				if loop-player have 4 diamonds in inventory:
+					remove 4 diamonds from loop-player
+					send "&eThe IRS has taken 4 diamonds away from you. Praise el Presidente!" to loop-player
+				if loop-player have 11 raw iron in inventory:
+					remove 11 raw iron from loop-player
+					send "&eThe IRS has taken 11 raw iron away from you. Praise el Presidente!" to loop-player
+				if loop-player have 11 iron ingots in inventory:
+					remove 11 iron ingots from loop-player
+					send "&eThe IRS has taken 11 iron ingots away from you. Praise el Presidente!" to loop-player
+				else:
+					send "&eIt's tax time! Because the IRS could not find diamond/iron in your inventory, you are in debt. To clear the debt, you'll need to pick up $35 worth of items.%nl%&7&oDo not overpay. No refunds." to loop-player
+					changeDebt(loop-player, 35)
+				stop
+			if loop-player have 2 diamonds in inventory:
+				remove 2 diamonds from loop-player
+				send "&eThe IRS has taken 2 diamonds away from you. Praise el Presidente!" to loop-player
+			if loop-player have 7 raw iron in inventory:
+				remove 7 raw iron from loop-player
+				send "&eThe IRS has taken 7 raw iron away from you. Praise el Presidente!" to loop-player
+			if loop-player have 7 iron ingots in inventory:
+				remove 7 iron ingots from loop-player
+				send "&eThe IRS has taken 7 iron ingots away from you. Praise el Presidente!" to loop-player
+			else:
+				send "&eIt's tax time! Because the IRS could not find diamond/iron in your inventory, you are in debt. To clear the debt, you'll need to pick up $20 worth of items.%nl%&7&oDo not overpay. No refunds." to loop-player
+				changeDebt(loop-player, 20)
+			
+on left click on bedrock:
+	{activeLaws::*} contains "breakBedrock":
+		player's tool is any pickaxe
+		player's tool is not diamond pickaxe or netherite pickaxe:
+			send "&cYou need a stronger tool to break bedrock."
+			stop
+		level of efficiency of player's tool < 5:
+			send "&cYou need a stronger efficiency enchantment to break bedrock."
+			stop
+		set {_isGigaTool} to tag "tag;BlocksBroken" of nbt compound of player's tool
+		{_isGigaTool} >= 0:
+			send "&cDo you think this will really work????"
+			stop
+		{breakbedrockwarning::%player%} is not set:
+			set {breakbedrockwarning::%player%} to true
+			send "&e&lWARNING! &eYou can break bedrock, but it is extremely damaging to your tool. Use it carefully."
+		break block naturally 
+		drop bedrock at event-block's location
+		level of unbreaking of player's tool is not set:
+			damage player's tool by 250
+		else if level of unbreaking of player's tool is 1:
+			damage player's tool by 200
+		else if level of unbreaking of player's tool is 2:
+			damage player's tool by 150
+		else if level of unbreaking of player's tool is 3:
+			damage player's tool by 100
+		else:
+			damage player's tool by 75
+		durability of player's tool >= max durability of player's tool:
+			remove 1 of player's tool from player
+	
+every 1 second in "world":
+	loop all players:
+		loop-player is in water:
+			{activeLaws::*} contains "deadlyWater":
+				damage loop-player by 3
+
+on death:
+	"%victim%" = "creeper":
+		victim is charged
+		{activeLaws::*} contains "chargedCreepers"
+		chance of 33%:
+			drop a diamond
+			
+on portal:
+	{activeLaws::*} contains "disableNether":
+		cancel event
+			
+on item despawn:
+	{activeLaws::*} contains "disableItemDespawn":
+		cancel event
+			
+on item mend:
+	{activeLaws::*} contains "disableItemMend":
+		cancel event
+			
+every minute:
+	{activeLaws::*} contains "oneMinuteOneItem":
+		add 1 of (random item out of all items) to inventory of all players
+		
+on spawn of creeper:
+	{activeLaws::*} contains "chargedCreepers"
+	charge the event-entity
+
+on spawn of zombie:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with chain chestplate
+	equip event-entity with chain leggings
+	chance of 10%:
+		equip event-entity with iron chestplate
+		equip event-entity with chain boots
+		equip event-entity with iron helmet
+		chance of 25%:
+			equip event-entity with diamond chestplate
+			equip event-entity with diamond boots
+			equip event-entity with diamond leggings
+			set event-entity's tool to diamond sword
+	set event-entity's tool to stone sword
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+	
+on spawn of husk:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with chain chestplate
+	equip event-entity with chain leggings
+	chance of 10%:
+		equip event-entity with iron chestplate
+		equip event-entity with chain boots
+		equip event-entity with iron helmet
+		chance of 25%:
+			equip event-entity with diamond chestplate
+			equip event-entity with diamond boots
+			equip event-entity with diamond leggings
+			set event-entity's tool to diamond sword
+	set event-entity's tool to stone sword
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+on spawn of drowned:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with chain chestplate
+	chance of 15%:
+		equip event-entity with iron chestplate
+		equip event-entity with chain boots
+		equip event-entity with iron helmet
+		chance of 5%:
+			equip event-entity with diamond chestplate
+			equip event-entity with diamond boots
+			equip event-entity with diamond leggings
+	set event-entity's tool to trident
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+
+on spawn of Skeleton:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with iron chestplate
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+on spawn of stray:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with iron chestplate
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+on spawn of wither:
+	{activeLaws::*} contains "buffUndead"
+	set event-entity's max health to 125
+	set event-entity's health to 125
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+on spawn of wither skeleton:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with netherite helmet
+	set event-entity's tool to iron sword
+	chance of 15%:
+		equip event-entity with netherite chestplate
+		equip event-entity with netherite boots
+		chance of 15%
+		equip event-entity with netherite leggings
+		set event-entity's tool to netherite sword
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+	
+on spawn of zombified piglin:
+	{activeLaws::*} contains "buffUndead"
+	equip event-entity with golden helmet
+	equip event-entity with golden chestplate
+	equip event-entity with golden boots
+	set event-entity's tool to gold axe
+	chance of 15%:
+		equip event-entity with golden leggings
+		equip event-entity with golden sword of sharpness 3
+	set event-entity's max health to 15
+	set event-entity's health to 15
+	set event-entity's walking speed to (event-entity's walking speed)+0.2
+
+
+on craft:
+	{activeLaws::*} does not contain "leafletArmor":
+		name of event-item contains "&aRejuvenation":
+			cancel event
+			send "&cYou have not unlocked this rule: &oleafletArmor&c."
+	{activeLaws::*} contains "disableCrafting":
+		cancel event
+		send "&cSomething's preventing you from crafting."
+	{activeLaws::*} contains "wealthTax":
+		changeDebt(player, 1.25)
+		
+on right click on any bed:
+	{activeLaws::*} contains "bedPVP":
+		player isn't sneaking
+		"%world%" is "world"
+		set event-block to air
+		create explosion of force 3 at event-block's location
+		
+on right click on glass:
+	{activeLaws::*} contains "glassKombat":
+		player is sneaking
+		set event-block to air
+		create explosion of force 2 at event-block's location
+		
+on fish:
+	if fish state = caught fish:
+		{activeLaws::*} contains "banFishing":
+			cancel event
+		{activeLaws::*} contains "fishAnything":
+			set item of fishing caught entity to (random item out of all items)
+
 function customCommand(x: text):
+	{_x} = "banAll":
+		loop all players:
+			kick loop-player due to "You guys voted to ban all players. I don't see why your still here."
+	{_x} = "ageOfWonders":
+		{activeLaws::*} contains "treeConservation":
+			remove "treeConservation" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &otreeConservation &ewas repealed due to conflictions."
+		{activeLaws::*} contains "preventFloatingTrees":
+			remove "preventFloatingTrees" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &opreventFloatingTrees &ewas repealed due to conflictions."
+	{_x} = "treeConservation":
+		{activeLaws::*} contains "ageOfWonders":
+			remove "ageOfWonders" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &oageOfWonders &ewas repealed due to conflictions."
+		{activeLaws::*} contains "preventFloatingTrees":
+			remove "preventFloatingTrees" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &opreventFloatingTrees &ewas repealed due to conflictions."
+	{_x} = "preventFloatingTrees":
+		{activeLaws::*} contains "ageOfWonders":
+			remove "ageOfWonders" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &oageOfWonders &ewas repealed due to conflictions."
+		{activeLaws::*} contains "treeConservation":
+			remove "treeConservation" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &otreeConservation &ewas repealed due to conflictions."
+	{_x} = "cancelSun":
+		{activeLaws::*} contains "cancelStars":
+			remove "cancelStars" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &ocancelStars &ewas repealed due to conflictions."
+		set time of the world "world" to 12am
+	{_x} = "cancelStars":
+		{activeLaws::*} contains "cancelSun":
+			remove "cancelSun" from {activeLaws::*}
+			broadcast "&c&lWARNING! &eRule &ocancelSun &ewas repealed due to conflictions."
+		set time of the world "world" to 6am
+	{_x} = "impeachAndConvictPresident":
+		broadcast "&6The president, &e%{president}% &6has been removed. There won't be a president until the next scheduled presidental election."
+		console command "pex user %{president}% group set default"
+		console command "nte player %{president}% suffix ''"
+		loop {presidentEnslaved::*}:
+			reduceDebt(loop-value, -150000000)
+		set flight mode of {president} to false
+		set {keepInv} to false
+		set {presidentForceShield} to false
+		delete {president}
+		delete {presidentVotedInParty}
+	loop {presidentEnslaved::*}:
+		reduceDebt(loop-value, -150000000)
+		wait 1 second
+		remove "impeachAndConvictPresident" from {activeLaws::*}
+	{_x} = "buffUndead":
+		wait 3 seconds
+		broadcast "&c&lWARNING! &eRule &obuffUndead &eis put into effect. Undead mobs are tougher and stronger."
+	{_x} = "playerIntimidation":
+		wait 3 seconds
+		broadcast "&c&lWARNING! &eRule &oplayerIntimidation &eis put into effect. Player's combat effectiveness diminished when large amounts of hostiles are nearby..."
+	{_x} = "gradualDifficultySpike":
+		wait 3 seconds
+		set {extraMobModifier} to 1
+		broadcast "&c&lWARNING! &eRule &ogradualDifficultySpike &eis put into effect. Every time a player is killed (not by player), future mob damage is increased by 1%%."
+	{_x} = "gigaTools":
+		wait 3 seconds
+		broadcast "&aYou have been given some Giga(R) branded tools. They might or might not break."
+		set {_item1} to diamond pickaxe of efficiency 10 named "&aGiga(R) Pickaxe" with lore "%nl%&7Super powerful pickaxe.%nl%&7No compromises*.%nl%&7From &8wish.com"
+		set {_1} to nbt compound of {_item1}
+		set {_item2} to diamond axe of efficiency 10 named "&aGiga(R) Axe" with lore "%nl%&7Super powerful Axe.%nl%&7No compromises*.%nl%&7From &8wish.com"
+		set {_2} to nbt compound of {_item2}
+		set {_item3} to diamond shovel of efficiency 10 named "&aGiga(R) Shovel" with lore "%nl%&7Super powerful Shovel.%nl%&7No compromises*.%nl%&7From &8wish.com"
+		set {_3} to nbt compound of {_item3}
+		set {_item4} to diamond sword of sharpness 10 named "&aGiga(R) Sword" with lore "%nl%&7Super powerful Sword.%nl%&7No compromises*.%nl%&7From &8wish.com"
+		set {_4} to nbt compound of {_item4}
+		set tag "tag;BlocksBroken" of {_1} to 0
+		set tag "tag;BlocksBroken" of {_2} to 0
+		set tag "tag;BlocksBroken" of {_3} to 0
+		set tag "tag;BlocksBroken" of {_4} to 0
+		chance of 50%:
+			give all players {_item1}
+		chance of 50%:
+			give all players {_item2}
+		chance of 50%:
+			give all players {_item4}
+		give all players {_item3}
+		remove "gigaTools" from {activeLaws::*}
+	
+right click with arrow:
+	{activeLaws::*} contains "throwArrows":
+		make player shoot arrow at speed 1.3
+		remove 1 of player's tool from player
+		
+on mine of any log:
+	{activeLaws::*} contains "preventFloatingTrees":
+		event is not canceled
+		wait 1 ticks
+		set event-block to chain
+	{activeLaws::*} contains "treeConservation":
+		cancel event
+		send "&cLogs aren't breakable due to &otreeConservation &crule."
+		
+on break:
+	event isn't canceled:
+		set {_breakBlocked} to tag "tag;BlocksBroken" of nbt compound of player's tool
+		{_breakBlocked} >= 0:
+			broadcast {_breakBlocked}
+			add 1 to {_breakBlocked}
+			set {_new} to nbt compound of player's tool
+			set tag "tag;BlocksBroken" of {_new} to {_breakBlocked}
+			player's tool = diamond axe:
+				{_breakBlocked} >= 127
+				remove 1 of player's tool from player
+			player's tool = diamond pickaxe:
+				{_breakBlocked} >= 127
+				remove 1 of player's tool from player
+			player's tool = diamond shovel:
+				{_breakBlocked} >= 127
+				remove 1 of player's tool from player
+				
+
+at 7am:
+	{activeLaws::*} contains "cancelStars"
+	set the time to 6am
+
+at 2am:
+	{activeLaws::*} contains "cancelSun"
+	set the time to 1am
+
+at 12am:
+	{activeLaws::*} contains "newDayNewEffect"
+	set {_effects::*} to "speed", "absorption", "darkness", "haste", "luck", "levitation", "poison", "strength", "weakness", "wither", "regeneration", and "health boost"
+	set {_effect} to random element out of {_effects::*}
+	loop all players:
+		console command "effect give %loop-player% %{_effect}% 300 1"
+		
+every 2 minutes:
+	{activeLaws::*} contains "betterTogether":
+		loop all players:
+			set {_a::*} to all players
+			set {_a} to random element out of {_a::*}
+			teleport all players to {_a}
+			send action bar "&6No one travels alone. TP'd everyone together." to loop-player
+	{activeLaws::*} contains "randomLightningStrikes"
+	add 1 to {randomLightningStrike}
+	{randomLightningStrike} = 5:
+		set {randomLightningStrike} TO 0
+		loop all players:
+			add loop-player to {_t::*}
+		set {_b} to random element out of {_t::*}
+		strike lightning at {_b}
+		push {_b} up at speed 1
+		
+right click with blaze rod:
+	{activeLaws::*} contains "blazingFury"
+	set {_cooldown} to difference between {fireball.%player%} and now
+	{fireball.%player%} is not set:
+		set {fireball.%player%} to now
+	set {_1} to level of fire protection of player's helmet*0.25
+	set {_2} to level of fire protection of player's chestplate*0.25
+	set {_3} to level of fire protection of player's leggings*0.25
+	set {_4} to level of fire protection of player's boots*0.25
+	set {_power} to {_1}+{_2}+{_3}+{_4}
+	{_cooldown} > 0.75 second
+	set {fireball.%player%} to now
+	shoot a fireball at speed 0.25+{_power}
+		 
+on anvil prepare:
+	slot 0 of event-inventory = any axe:
+		{activeLaws::*} contains "noEnchantAxe"
+		send "&cPerhaps a rule is preventing you to change this item."
+		set repair cost of event-inventory to -1
+	slot 0 of event-inventory = any sword:
+		{activeLaws::*} contains "noEnchantSword"
+		send "&cPerhaps a rule is preventing you to change this item."
+		set repair cost of event-inventory to -1
+	slot 0 of event-inventory = any helmet or any chestplate:
+		{activeLaws::*} contains "noEnchantArmor"
+		send "&cPerhaps a rule is preventing you to change this item."
+		set repair cost of event-inventory to -1
+	slot 0 of event-inventory = any leggings or any boots:
+		{activeLaws::*} contains "noEnchantArmor"
+		send "&cPerhaps a rule is preventing you to change this item."
+		set repair cost of event-inventory to -1
+		
+on enchant prepare:
+	if event-item is any sword:
+		{activeLaws::*} contains "noEnchantSword"
+		send "&cPerhaps a rule is preventing you to enchant this item." to player
+		set enchant offer 1, 2 and 3 to protection 1
+		set the cost of enchant offer 1, 2 and 3 to 100000
+	if event-item is any axe:
+		{activeLaws::*} contains "noEnchantAxe"
+		send "&cPerhaps a rule is preventing you to enchant this item." to player
+		set enchant offer 1, 2 and 3 to protection 1
+		set the cost of enchant offer 1, 2 and 3 to 100000
+	if event-item is any helmet or any chestplate:
+		{activeLaws::*} contains "noEnchantArmor"
+		send "&cPerhaps a rule is preventing you to enchant this item." to player
+		set enchant offer 1, 2 and 3 to sharpness 1
+		set the cost of enchant offer 1, 2 and 3 to 100000
+	if event-item is any leggings or any boots:
+		{activeLaws::*} contains "noEnchantArmor"
+		send "&cPerhaps a rule is preventing you to enchant this item." to player
+		set enchant offer 1, 2 and 3 to sharpness 1
+		set the cost of enchant offer 1, 2 and 3 to 100000
+		 
+on break:
+	{activeLaws::*} contains "lagSpikes":
+		chance of 50%:
+			cancel event
+	event-block = glass block or glass pane:
+		{activeLaws::*} contains "glassKombat"
+		damage player by 2.5 hearts
+			
+on right click on entity:
+	player's tool = bucket:
+		{activeLaws::*} contains "instaBucket"
+		remove 1 of player's tool from player
+		give player milk bucket
+		
+on left click on glass:
+	{activeLaws::*} contains "glassKombat":
+		damage player by 1 hearts
+
+on left click on glass pane:
+	{activeLaws::*} contains "glassKombat":
+		damage player by 0.5 hearts
+		 
+on damage:
+	{activeLaws::*} contains "playerIntimidation":
+		attacker is player
+		loop all entities in radius 7 around attacker:
+			loop-entity is not player
+			"%loop-entity%" contains "zombie":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "spider":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "Skeleton":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "pillager":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "husk":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "creeper":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "evoker":
+				add loop-entity to {_list::*}
+			"%loop-entity%" contains "blaze":
+				add loop-entity to {_list::*}
+		set {_amount} to amount of {_list::*}
+		set {_dmgreduction} to {_amount}*0.05
+		{_dmgreduction} > 0.75:
+			set {_dmgreduction} to 0.75
+		set damage to damage*(1-{_dmgreduction})
+	{activeLaws::*} contains "noU":
+		victim is blocking
+		attacker is not ender dragon or wither
+		damage attacker by damage
+		apply slowness 3 without particles to victim for 2 seconds 
+	{activeLaws::*} contains "gradualDifficultySpike":
+		attacker is not player
+		victim is player
+		set damage to damage*{extraMobModifier} 
+	{activeLaws::*} contains "lowLightStrength":
+		attacker is player
+		set {_bonusdmg} to (15-sunlight level at the attacker)/30
+		set damage to damage*(1+{_bonusdmg})
+	{activeLaws::*} contains "knockbackToTheFuture":
+		wait 1 ticks
+		push victim upwards at speed 0.6
+		push victim backwards at speed 2
+	victim = ender dragon:
+		{activeLaws::*} contains "betterEnderDragonBoss"
+		health of victim < 65:
+			{enderdragbossfight::strik1} is not set
+			set {enderdragbossfight::strik1} to 1
+			loop all players:
+				loop-player's world = "world_the_end"
+				strike lightning at loop-player
+				push loop-player up at speed 2
+		health of victim < 50:
+			damage cause = entity explosion or block explosion
+			cancel event
+		health of victim < 25:
+			{enderdragbossfight::strike2} is not set
+			set {enderdragbossfight::strike2} to 1
+			loop all players:
+				loop-player's world = "world_the_end"
+				strike lightning at loop-player
+				push loop-player up at speed 2
+		health of victim < 25:
+			{enderdragbossfight::wither1} is not set
+			set {enderdragbossfight::wither1} to 1
+			summon a wither at the victim
+		health of victim < 5:
+			{enderdragbossfight::strike3} is not set
+			set {enderdragbossfight::strike3} to 1
+			loop all players:
+				loop-player's world = "world_the_end"
+				strike lightning at loop-player
+				push loop-player up at speed 2
+	set {_breakBlocked} to tag "tag;BlocksBroken" of nbt compound of attacker's tool
+	{_breakBlocked} >= 0:
+		attacker's tool = diamond sword:
+			add final damage to {_breakBlocked}
+			set {_new} to nbt compound of attacker's tool
+			set tag "tag;BlocksBroken" of {_new} to {_breakBlocked}
+			{_breakBlocked} >= 70
+			remove 1 of attacker's tool from attacker
+	{activeLaws::*} contains "showMobHPRemaining":
+		send action bar "&eTarget had &c%victim's health%♥ &eremaining." to attacker
+
+on fish:
+	if "%fishing state%" is "in ground" or "reel in":
+		{activeLaws::*} contains "grapplingHooks"
+		set {_cooldown} to difference between {fireball.%player%} and now
+		{fireball.%player%} is not set:
+			set {fireball.%player%} to now
+		{_cooldown} > 1.75 second
+		set {fireball.%player%} to now
+		set {_ploc.x} to x coordinate of player
+		set {_floc.x} to x coordinate of fishing hook
+		set {_ang} to {_floc.x} - {_ploc.x}
+		set {_ploc.z} to z coordinate of player
+		set {_floc.z} to z coordinate of fishing hook
+		set {_ang.2} to {_floc.z} - {_ploc.z}
+		set velocity of player to new Vector {_ang}, 1, {_ang.2}
+		damage player's tool by 1
+
+on target:
+	target is ender dragon:
+		event-entity is a wither:
+			cancel event
+	target is wither:
+		event-entity is a ender dragon:
+			cancel event
+			
+on consume:
+	event-item = carrot:
+		{activeLaws::*} contains "testingCarrotTheory":
+			apply night vision to player for 10 seconds
+	event-item = golden carrot:
+		{activeLaws::*} contains "testingCarrotTheory":
+			apply night vision to player for 2 minutes			
+			
+on death:
+	victim = ender dragon:
+		delete {enderdragbossfight::*}
+	victim is not player:
+		attacker is player
+		add 1 to {magicalBookLuckChance::%attacker%::combat}
+		{activeLaws::*} contains "dropSuperBlastProtectionBooks":
+			add "blastprot" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperFireProtectionBooks":
+			add "fireprot" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperKnockbackBooks":
+			add "kb" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperPowerBooks":
+			add "power" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperProjProtectionBooks":
+			add "projprot" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperProtectionBooks":
+			add "prot" to {_pullList::*}
+		{activeLaws::*} contains "dropSuperSharpnessBooks":
+			add "sharp" to {_pullList::*}
+		set {_chance} to ({magicalBookLuckChance::%attacker%::combat}/({magicalBookLuckChance::%attacker%::combat}+225))*100
+		chance of {_chance}%
+		{_pullList::*} is set
+		set {_random} to random element out of {_pullList::*}
+		{_random} = "dropSuperBlastProtectionBooks":
+			set {_rando} to round(random number between 5 and 10)
+			magicalBook(attacker, "Blast_Protection", {_rando}, "publicDrop")
+		{_random} = "dropSuperFireProtectionBooks":
+			set {_rando} to round(random number between 5 and 10)
+			magicalBook(attacker, "Fire_Protection", {_rando}, "publicDrop")
+		{_random} = "dropSuperKnockbackBooks":
+			set {_rando} to round(random number between 3 and 5)
+			magicalBook(attacker, "Knockback", {_rando}, "publicDrop")
+		{_random} = "dropSuperPowerBooks":
+			set {_rando} to round(random number between 6 and 10)
+			magicalBook(attacker, "Power", {_rando}, "publicDrop")
+		{_random} = "dropSuperProjProtectionBooks":
+			set {_rando} to round(random number between 5 and 10)
+			magicalBook(attacker, "Projectile_Protection", {_rando}, "publicDrop")
+		{_random} = "dropSuperProtectionBooks":
+			set {_rando} to round(random number between 5 and 10)
+			magicalBook(attacker, "Protection", {_rando}, "publicDrop")
+		{_random} = "dropSuperSharpnessBooks":
+			set {_rando} to round(random number between 6 and 10)
+			magicalBook(attacker, "Sharpness", {_rando}, "publicDrop")
+		delete {magicalBookLuckChance::%attacker%::combat}
+	victim = player:
+		{activeLaws::*} contains "getPlayerHeadWhenKill":
+			attacker is player
+			set {_head} to ("%victim%" parsed as offline player)'s skull
+			drop {_head}
+		{activeLaws::*} contains "throneOfPresidency":
+			attacker is player
+			{president} = victim:
+				send "&6%attacker% &ehas killed President &6%victim% &eand now is president." to all players
+				console command "pex user %victim% group set default"
+				console command "nte player %victim% suffix ''"
+				set {president} to "%attacker%"
+				set {presidentVotedInParty} to {party::%attacker%}
+				console command "pex user %attacker% group set President"
+				console command "nte player %attacker% suffix ' &3✪'"
+		{activeLaws::*} contains "gradualDifficultySpike":
+			attacker is not player
+			victim is player
+			add 0.01 to {extraMobModifier} 
+			broadcast "&7&oIncreased lethality of monsters by +1%%. (Current: %{extraMobModifier}%x)"
+
+on connect:
+	{activeLaws::*} contains "banAll":
+		{president} is player:
+			stop
+		player is op:
+			stop
+		kick the player due to "you people voted to ban yourselves. I'll give you &b&ocommendations &rfor that.%nl%the president can repeal this via command: &a/policy"

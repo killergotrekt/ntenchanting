@@ -153,6 +153,11 @@ command /endElections:
 		# CHECK VOTERS 1 = 2 = 3
 		loop all players:
 			close loop-player's inventory
+		set {_turnout} to amount of {options::1::voters::*}+amount of {options::2::voters::*}+amount of {options::3::voters::*}
+		{_turnout} < 3:
+			delete {options::*}
+			send "&bElections heve ended.%nl%&cDue to insufficient turnout, nothing was passed."
+			stop
 		amount of {options::3::voters::*} = amount of {options::2::voters::*}:
 			amount of {options::3::voters::*} = amount of {options::1::voters::*}:
 				{activeLaws::*} contains "initiativeElectionTieRuleChange":
@@ -228,6 +233,14 @@ command /vote [<text>] [<text>] [<text>]:
 	aliases: v
 	trigger:
 		arg-1 is not set:
+			{activeLaws::*} contains "discriminateBedrockPlayers":
+				"%player%" contains ".":
+					send "&cYou may not vote!"
+					stop
+			{activeLaws::*} contains "strictVoterLaws":
+				time played of player < 120 minutes:
+					send "&cOne-hundred and twenty minutes of playtime is required to be president."
+					stop
 			{options::1::guiSlot} or {options::2::guiSlot} or {options::3::guiSlot} is not set:
 				close player's inventory
 				send "&cThere is no elections going on currently.%nl%&cPerhaps you want to change your political party while you wait? (/party)"
@@ -291,6 +304,7 @@ command /vote [<text>] [<text>] [<text>]:
 					stop
 				"%{votingoptions::*}%" contains arg-2
 				"%{activeLaws::*}%" does not contain arg-2
+				customCommand(arg-2)
 				add arg-2 to {activeLaws::*}
 				send "&a&oAdministrator Bonus: Approved initiative %arg-2%." to player
 				set {_description} to yml value arg-2 from file "plugins\Skript\scripts\votingDescriptions.yml"
@@ -364,12 +378,18 @@ on inventory click:
 function finalPresidentElection(x: text, n: number):
 	console command "pex user %{president}% group set default"
 	console command "nte player %{president}% suffix ''"
+	set flight mode of {president} to false
+	set {keepInv} to false
+	set {presidentForceShield} to false
+	loop {presidentEnslaved::*}:
+		reduceDebt(loop-value, -150000000)
 	wait 10 ticks
 	broadcast "&3%{_x}%"
 	set {president} to {options::president%{_n}%::name}
 	set {presidentVotedInParty} to {party::%{options::president%{_n}%::name}%}
 	console command "pex user %{president}% group set President"
 	console command "nte player %{president}% suffix ' &3✪'"
+	delete {presidentEnslaved::*}
 	wait 3 ticks
 	send "%nl%%nl%&3&lCongrats on being president.%nl%To enact policies, command: &3/settings &for &3/policy" to {president}
 
