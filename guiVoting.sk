@@ -31,6 +31,7 @@ on tab complete of "/vote":
 		set tab completions for position 1 to "list"
 		
 on stop:
+	delete {marriageproposal::%player%}
 	delete {votingoptions::*}
 	delete {options::*}
 	delete {options::electionTime}
@@ -217,9 +218,19 @@ command /endElections:
 					finalPresidentElection("%{options::president1::name}% ran unopposed and now is president.", 1)
 					stop
 			amount of {options::president1::voters::*} = amount of {options::president2::voters::*}:
-				set {_winner} to round(random number between 1 and 2)
-				finalPresidentElection("Two candidates recieved same amount of votes, so %{options::president%{_winner}%::name}% was randomly picked.", {_winner})
-				stop
+				{activeLaws::*} contains "presidentalElectionTieRuleChange":
+					set {_playerA} to {options::president1::name} parsed as player
+					set {_playerB} to {options::president2::name} parsed as player
+					time played of {_playerA} > time played of {_playerB}:
+						finalPresidentElection("%{options::president1::name}% played longer so is president.", 1)
+						stop
+					else:
+						finalPresidentElection("%{options::president2::name}% played longer so is president.", 2)
+						stop
+				else:
+					set {_winner} to round(random number between 1 and 2)
+					finalPresidentElection("Two candidates recieved same amount of votes, so %{options::president%{_winner}%::name}% was randomly picked.", {_winner})
+					stop
 			amount of {options::president1::voters::*} > amount of {options::president2::voters::*}:
 				finalPresidentElection("%{options::president1::name}% got the most votes and is now the president.", 1)
 				stop
@@ -230,6 +241,7 @@ command /endElections:
 		delete {options::*}
 
 command /vote [<text>] [<text>] [<text>]:
+	description: Vote for initiatives, presidents
 	aliases: v
 	trigger:
 		arg-1 is not set:
@@ -239,47 +251,57 @@ command /vote [<text>] [<text>] [<text>]:
 					stop
 			{activeLaws::*} contains "strictVoterLaws":
 				time played of player < 120 minutes:
-					send "&cOne-hundred and twenty minutes of playtime is required to be president."
+					send "&cOne-hundred and twenty minutes of playtime is required to be vote."
 					stop
 			{options::1::guiSlot} or {options::2::guiSlot} or {options::3::guiSlot} is not set:
 				close player's inventory
 				send "&cThere is no elections going on currently.%nl%&cPerhaps you want to change your political party while you wait? (/party)"
 				stop
-			set {_item} to {options::1::guiSlot}
-			set {_item2} to {options::2::guiSlot} 
-			set {_item3} to {options::3::guiSlot} 
-			{options::1::voters::*} does not contain "%player%":
-				{options::2::voters::*} or {options::3::voters::*} contain "%player%":
-					add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item}
+			{activeLaws::*} contains "initiativeElections":
+				set {_item} to {options::1::guiSlot}
+				set {_item2} to {options::2::guiSlot} 
+				set {_item3} to {options::3::guiSlot} 
+				{options::1::voters::*} does not contain "%player%":
+					{options::2::voters::*} or {options::3::voters::*} contain "%player%":
+						add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item}
+					else:
+						add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item}
 				else:
-					add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item}
-			else:
-				add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item}
-			{options::2::voters::*} does not contain "%player%":
-				{options::1::voters::*} or {options::3::voters::*} contain "%player%":
-					add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item2}
+					add colored "%nl%&8%amount of {options::1::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item}
+				{options::2::voters::*} does not contain "%player%":
+					{options::1::voters::*} or {options::3::voters::*} contain "%player%":
+						add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item2}
+					else:
+						add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item2}
 				else:
-					add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item2}
-			else:
-				add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item2}
-			{options::3::voters::*} does not contain "%player%":
-				{options::2::voters::*} or {options::1::voters::*} contain "%player%":
-					add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item3}
+					add colored "%nl%&8%amount of {options::2::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item2}
+				{options::3::voters::*} does not contain "%player%":
+					{options::2::voters::*} or {options::1::voters::*} contain "%player%":
+						add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##ff2b2b>✘ You already voted!" to lore of {_item3}
+					else:
+						add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item3}
 				else:
-					add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%&eClick to vote for this initiative." to lore of {_item3}
-			else:
-				add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item3}
+					add colored "%nl%&8%amount of {options::3::voters::*}+0% votes%nl%<##7dff8a>✔ You voted for this!" to lore of {_item3}
 			open hopper inventory named "{@voting}" to player
 			set slot 0, 1, 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals") with lore ""
 			{options::presidental} = true:
 				set slot 0 of current inventory of player to jukebox named "&ePresidental Elections" with lore "%nl%&bCandidates:%nl%&7- %{options::president1::name}%%nl%&7- %{options::president2::name}%%nl%%nl%&eClick to vote..."
-				set slot 2 of current inventory of player to {_item}
-				set slot 3 of current inventory of player to {_item2}
-				set slot 4 of current inventory of player to {_item3}
+				{activeLaws::*} contains "initiativeElections":
+					set slot 2 of current inventory of player to {_item}
+					set slot 3 of current inventory of player to {_item2}
+					set slot 4 of current inventory of player to {_item3}
+				else:
+					set slot 2, 3, and 4 of current inventory of player to gray stained glass pane named rainbow("Proposals") with lore ""
+					set slot 3 of current inventory of player to red dye named "&4Nothing to see here" with lore "&7What voting?%nl%%nl%&8&oYawl bozos repealed the%nl%&8&othing that hosts elections"
+					
 			else:
-				set slot 1 of current inventory of player to {_item}
-				set slot 2 of current inventory of player to {_item2}
-				set slot 3 of current inventory of player to {_item3}
+				{activeLaws::*} contains "initiativeElections":
+					set slot 1 of current inventory of player to {_item}
+					set slot 2 of current inventory of player to {_item2}
+					set slot 3 of current inventory of player to {_item3}
+				else:
+					set slot 1, 2, and 3 of current inventory of player to gray stained glass pane named rainbow("Proposals") with lore ""
+					set slot 2 of current inventory of player to red dye named "&4Nothing to see here" with lore "&7What voting?%nl%%nl%&8&oYawl bozos repealed the%nl%&8&othing that hosts elections"
 		arg-1 is set:
 			arg-1 = "list":
 				{activeLaws::*} is not set:

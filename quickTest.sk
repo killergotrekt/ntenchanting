@@ -239,8 +239,18 @@ on inventory click:
 			set weather in player's world to clear
 			send action bar "&fWeather was set to clear." to all players
 			player command "settings"
+		name of event-slot = "&cForcefield Shield: False":
+			set {presidentForceShield} to true
+			player command "settings"
+		name of event-slot = "&aForcefield Shield: True":
+			set {presidentForceShield} to false
+			player command "settings"
 		name of event-slot = "&aBomb Players":
 			player command "operationDesertStorm"
+		name of event-slot = "&aOverride Initiative Elections Results":
+			player command "TabComplete:dangerousPleasenevervotethisin:overrideInitiative"
+		name of event-slot = "&aOverturn Presidental Elections":
+			player command "TabComplete:dangerousPleasenevervotethisin:overridePresident"
 	if name of event-inventory is "Pick a Victim to terrorize":
 		cancel event
 		event-inventory is not inventory of player
@@ -273,10 +283,86 @@ on inventory click:
 				send action bar "&f%sender% &cis bombing &f%{_victim}%&c!" to all players
 			else:
 				send "&cYou don't have any specific items to blow up players (see 'Bomb Strength')."
-		
+	if name of event-inventory is "Choose new winner (initiative)":
+		cancel event
+		event-inventory is not inventory of player
+		event-slot = 0:
+			close player's inventory
+			loop 250 times:
+				add "ElectionFraud" to {options::1::voters::*}
+			close player's inventory
+			send "&aAdded 250 votes to ##1."
+		event-slot = 4:
+			close player's inventory
+			loop 250 times:
+				add "ElectionFraud" to {options::2::voters::*}
+			close player's inventory
+			send "&aAdded 250 votes to ##2."
+		event-slot = 8:
+			close player's inventory
+			loop 250 times:
+				add "ElectionFraud" to {options::3::voters::*}
+			close player's inventory
+			send "&aAdded 250 votes to ##3."
+	if name of event-inventory is "Choose new winner (president)":
+		cancel event
+		event-inventory is not inventory of player
+		event-slot = 0:
+			event-slot is not air
+			close player's inventory
+			loop 250 times:
+				add "ElectionFraud" to {options::president1::voters::*}
+			close player's inventory
+			send "&aAdded 250 votes to ##1."
+		event-slot = 4:
+			event-slot is not air
+			close player's inventory
+			loop 250 times:
+				add "ElectionFraud" to {options::president2::voters::*}
+			close player's inventory
+			send "&aAdded 250 votes to ##2."
+
 on death of a player:
 	{keepInv} = true:
 		keep the inventory and experiences
+
+command TabComplete:dangerousPleasenevervotethisin:overrideInitiative [<text>]:
+	trigger:
+		"%{activeLaws::*}%" contain "presidentOverrideElectionsPowers":
+			set {_endTime} to difference between {options::electionTime} and now
+			{_endTime} < 3 minutes:
+				open chest inventory with 1 rows named "Choose new winner (initiative)" to player
+				set {_item} to {options::1::guiSlot}
+				set {_item2} to {options::2::guiSlot} 
+				set {_item3} to {options::3::guiSlot} 
+				add colored "%nl%&8This cannot be undone.%nl%&eClick to override." to lore of {_item}
+				add colored "%nl%&8This cannot be undone.%nl%&eClick to override." to lore of {_item2}
+				add colored "%nl%&8This cannot be undone.%nl%&eClick to override." to lore of {_item3}
+				set slot 0 of current inventory of player to {_item}
+				set slot 4 of current inventory of player to {_item2}
+				set slot 8 of current inventory of player to {_item3}
+			else:
+				send "&cYou may only override initiative elections in less than 3 minute mark."
+		else:
+			send "&cRule not in effect, you cant do this."
+			
+command TabComplete:dangerousPleasenevervotethisin:overridePresident [<text>]:
+	trigger:
+		"%{activeLaws::*}%" contain "overturnElections":
+			set {_endTime} to difference between {options::electionTime} and now
+			{_endTime} < 3 minutes:
+				{options::presidental} = true:
+					open chest inventory with 1 rows named "Appoint new winner (president)" to player
+					{options::president1::name} is set:
+						set slot 0 of player's inventory to ("%{options::president1::name}%" parsed as offline player)'s skull named "%{options::president1::name}%" with lore "&7%{party::%{options::president1::name}%}%%nl%%nl%&8This cannot be undone.%nl%&eClick to override."
+					{options::president2::name} is set:
+						set slot 8 of player's inventory to ("%{options::president2::name}%" parsed as offline player)'s skull named "%{options::president2::name}%" with lore "&7%{party::%{options::president2::name}%}%%nl%%nl%&8This cannot be undone.%nl%&eClick to override."
+				else:
+					send "&cthis election is not a president election."
+			else:
+				send "&cYou may only override presidental elections in less than 3 minute mark."
+		else:
+			send "&cRule not in effect, you cant do this."
 
 command bomb [<text>]:
 	aliases: bombing, terrorize, operationDesertStorm
@@ -340,15 +426,13 @@ command settings [<text>]:
 			set slot 7 of current inventory of player to lime wool named "&ASearch Players" with lore "%nl%&eTo search players, run command%nl%&e/search <player>"
 		"%{activeLaws::*}%" contain "operationDesertStorm":
 			set slot 8 of current inventory of player to tnt named "&ABomb Players" with lore "%nl%&eClick to pick victims..."
-		"%{activeLaws::*}%" contain "presidentMiliaryPowers":
-			set slot 9 of current inventory of player to lime wool named "&ASentinels" with lore "%nl%&eClick to hire..."
-		"%{activeLaws::*}%" contain "presidentkeepInvPowers":
+		"%{activeLaws::*}%" contain "presidentForceFieldPowers":
 			{presidentForceShield} is not set:
 				set {presidentForceShield} to false
 			{presidentForceShield} = false:
-				set slot 10 of current inventory of player to red wool named "&cForcefield Shield: False" with lore "%nl%&eClick to switch."
+				set slot 9 of current inventory of player to red wool named "&cForcefield Shield: False" with lore "%nl%&eClick to switch."
 			else:
-				set slot 10 of current inventory of player to lime wool named "&aForcefield Shield: True" with lore "%nl%&eClick to switch."
+				set slot 9 of current inventory of player to lime wool named "&aForcefield Shield: True" with lore "&8* Applied on low HP%nl%%nl%&eClick to switch."
 		set slot 33 of current inventory of player to iron door named "&fVault" with lore "&8%amount of {collectedItems::*}%+ stacks uncollected%nl%%nl%&7Where collected taxes or%nl%&7enslaved items are stored.%nl%%nl%&eClick to collect all."
 		"%{activeLaws::*}%" contain "banAll":
 			set slot 27 of current inventory of player to barrier named "&cRepeal banAll" with lore "%nl%&8This cannot be undone.%nl%&eClick to confirm."
@@ -359,9 +443,9 @@ command settings [<text>]:
 		"%{activeLaws::*}%" does not contain "presidentEnslavePowers":
 			{presidentVotedInParty} = "&dWar Criminal"
 			set slot 30 of current inventory of player to barrier named "&aApprove presidentEnslavePowers" with lore "&8&oSecret Power.%nl%%nl%&8This cannot be undone.%nl%&eClick to confirm."
-		"%{activeLaws::*}%" does not contain "presidentOverrideElectionsPowers":
+		"%{activeLaws::*}%" contain "presidentOverrideElectionsPowers":
 			set slot 34 of current inventory of player to barrier named "&aOverride Initiative Elections Results" with lore "%nl%&eChoose new winner..."
-		"%{activeLaws::*}%" does not contain "overturnElections":
+		"%{activeLaws::*}%" contain "overturnElections":
 			set slot 35 of current inventory of player to barrier named "&aOverturn Presidental Elections" with lore "%nl%&eChoose new winner..."
 		
 command kick <player> [<text>]:

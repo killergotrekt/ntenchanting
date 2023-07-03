@@ -22,6 +22,16 @@ command /beginElectionTimer:
 		set {options::electionTime} to 30 minutes after now
 	
 every second:
+	{activeLaws::*} contains "presidentForceFieldPowers":
+		loop all players:
+			{president} = "%loop-player%"
+			health of loop-player < 2
+			loop all entities in radius 8 around loop-player:
+				loop-entity-2 is not player
+				loop-entity-2 is not ender dragon
+				"%loop-entity-2%" does not contain "allay", "bat", "cat", "chicken", "cod", "cow", "donkey", "frog", "sheep", "pig", "parrot", "horse", "villager", "sniffer", "mooshroom", "rabbit", "spider", "polar bear", "llama", "wolf" and "panda"
+				push loop-entity-2 upwards at speed 2.5
+				push loop-entity-2 backwards at speed 2.5
 	set {_nextDate} to first element of sorted {scheduledElections::*}
 	set {_nextPresidentalDate} to first element of sorted {scheduledPresidentalElections::*}
 	set {_difference} to difference between {_nextDate} and now
@@ -40,38 +50,56 @@ every second:
 		set {options::alert1} to true
 		broadcast "&bElections begin in 6 hours."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
-			broadcast "&3&l! &3A presidental election is coming up soon."
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3A presidental election is coming up soon."
+			else:
+				broadcast "&3&l! &3%{president}%'s election is coming up soon."
 	{_difference} < 3 hours:
 		{options::alert2} is not set
 		set {options::alert2} to true
 		broadcast "&bElections begin in 3 hours."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
-			broadcast "&3&l! &3Announcing your candidacy for president in the next one will be avaliable in the 1 hour mark."
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3Announcing your candidacy for president in the next one will be avaliable in the 1 hour mark."
+			else:
+				broadcast "&3&l! &3%{president}%'s election candidates will be released in the 1 hour mark."
 	{_difference} < 2 hours:
 		{options::alert2a} is not set
 		set {options::alert2a} to true
 		broadcast "&bElections begin in 2 hours."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
-			broadcast "&3&l! &3Announcing your candidacy for president will be avaliable in the 1 hour mark."
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3Announcing your candidacy for president will be avaliable in the 1 hour mark."
+			else:
+				broadcast "&3&l! &3%{president}%'s election will consist of the following people running: %{president}% and %{president}%."
 	{_difference} < 1 hour:
 		{options::alert3} is not set
 		set {options::alert3} to true
 		broadcast "&bElections begin in 1 hour."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
 			set {options::announcePresidency} to true
-			broadcast "&3&l! &3You can now announce your candidacy for president with the command &l/iWantToBePresident &3&o(2 max)"
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3You can now announce your candidacy for president with the command &l/iWantToBePresident &3&o(2 max)"
+			else:
+				broadcast "&3&l! &3%{president}%'s election will be starting soon. Do not forget to vote!"
+				set {options::president2::name} to {president}
+				set {options::president1::name} to {president}
 	{_difference} < 30 minute:
 		{options::alert4} is not set
 		set {options::alert4} to true
 		broadcast "&bElections begin in 30 minutes."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
-			broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
+			else:
+				broadcast "&3&l! &3Reminder: Select %{president}% as your president tonight."
 	{_difference} < 5 minute:
 		{options::alert5} is not set
 		set {options::alert5} to true
 		broadcast "&bElections begin in 5 minutes."
 		{_nextDate} = (first element of sorted {scheduledpresidentalElections::*}):
-			broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
+			{activeLaws::*} contains "initiativeElections":
+				broadcast "&3&l! &3Reminder: A scheduled presidental election is occuring tonight."
 	{_difference} < 2 second:
 		console command "beginElectionTimer"
 		set {options::electionTime} to 30 minutes after now
@@ -91,6 +119,11 @@ every second:
 		set name of sidebar of loop-player to "&e&lvoting"
 		{options::1::guislot} is set:
 			set {_endTime} to difference between {options::electionTime} and now
+			{_endTime} < 3 minutes:
+				{activeLaws::*} contains "forceVote"
+				if inventory name of current inventory of loop-player does not contain "Proposals (choose one wisely)" or "Presidental Elections":
+					loop-player command "/vote"
+					send "&c&lYOU MUST MAKE UR VOICE HEARD." to loop-player
 			{_endTime} < 1 second:
 				close loop-player's inventory
 				console command "/endelections"

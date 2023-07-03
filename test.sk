@@ -61,6 +61,8 @@ every second:
 		set {_hp.%loop-player%} to 10
 		{party::%loop-player%} = "&dWar Criminal":
 			remove 5 from {_hp.%loop-player%}
+		{party::%loop-player%} = "&2Populist":
+			add 2 to {_hp.%loop-player%}
 		set {_a} to tag "tag;Leaflet" of nbt compound of loop-player's helmet
 		{_a} is set:
 			add 0.5 to {_mx}

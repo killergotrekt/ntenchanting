@@ -65,6 +65,43 @@ on jump:
 		set {_4} to level of feather falling of player's boots*0.1
 		push the player up at speed 0.2+{_4}
 		
+on consume:
+	event-item = raw chicken:
+		{activeLaws::*} contain "losPolloHermanos"
+		chance of 50%:
+			apply slowness 3 to player for 15 seconds 
+		else if chance of 50%:
+			apply speed 1 to player for 120 seconds 
+		else if chance of 50%:
+			apply jump boost 2 to player for 120 seconds			
+		else if chance of 50%:
+			apply speed 20 to player for 120 seconds	
+			send "&2&kdWUODHWUDH &2SPECIAL CHICKEN FROM LOSS POLLO HERMANOS MAKE YOU HIGH!!! &2&kdWUODHWUDH"
+		else if chance of 50%:
+			apply jump boost 20 to player for 120 seconds	
+			send "&2&kdWUODHWUDH &2SPECIAL CHICKEN FROM LOSS POLLO HERMANOS MAKE YOU SUPER SUPER HIGH!!! &2&kdWUODHWUDH"
+		else:
+			apply health boost 4 to player for 300 seconds	
+			send "&2&kdWUODHWUDH &2&lSUPER HEALTH GROWTH GO AHEAD SPEEDDDDDDDDDDD &2&kdWUODHWUDH"
+	event-item = cooked chicken:
+		{activeLaws::*} contain "losPolloHermanos"
+		set {_a} to round(random number between 1 and 5)
+		{_a} = 1:
+			apply speed 10 to player for 120 seconds	
+			send "&2&kdWUODHWUDH &2SPEEEEEEEEEED!!! &2&kdWUODHWUDH"
+		{_a} = 2:
+			apply absorption 10 to player for 20 seconds	
+			send "&2&kdWUODHWUDH &2SUPER SHIELD!!! &2&kdWUODHWUDH"
+		{_a} = 3:
+			apply regeneration 15 to player for 5 seconds	
+			send "&2&kdWUODHWUDH &2SUPER TOUGH!! &2&kdWUODHWUDH"
+		{_a} = 4:
+			apply haste 5 to player for 15 seconds	
+			send "&2&kdWUODHWUDH &2SUPER MINING SPEED!! &2&kdWUODHWUDH"
+		{_a} = 5:
+			apply poison 55 to player for 15 seconds	
+			send "&2You got sick from eating the chicken."
+		
 every 30 minutes:
 	{activeLaws::*} = "IRS":
 		add 1 to {fuckTaxesTime}
@@ -388,6 +425,9 @@ function customCommand(x: text):
 		wait 3 seconds
 		set {extraMobModifier} to 1
 		broadcast "&c&lWARNING! &eRule &ogradualDifficultySpike &eis put into effect. Every time a player is killed (not by player), future mob damage is increased by 1%%."
+	{_x} = "marryPlayers":
+		wait 3 seconds
+		broadcast "&c&lWARNING! &eRule &omarryPlayers &eis put into effect. To marry, run command &l/marry%nl%&e&lWhy should you marry?%nl%&eMarried players (when online) get:%nl%&e- 50%% share of damage between both%nl%&e- Additional Ore drops%nl%&e- Can't attack each other%nl%&e- Share Magical Book Drops"
 	{_x} = "gigaTools":
 		wait 3 seconds
 		broadcast "&aYou have been given some Giga(R) branded tools. They might or might not break."
@@ -744,3 +784,4 @@ on connect:
 		player is op:
 			stop
 		kick the player due to "you people voted to ban yourselves. I'll give you &b&ocommendations &rfor that.%nl%the president can repeal this via command: &a/policy"
+		

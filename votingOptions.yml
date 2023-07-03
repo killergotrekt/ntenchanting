@@ -40,7 +40,6 @@ allOfTheCompleteOptions:
 - emeraldInflation
 - extendedReach
 - fishAnything
-- forceSmeltAllOres
 - forceVote
 #- ganpatBoss
 - getPlayerHeadWhenKill
@@ -59,8 +58,6 @@ allOfTheCompleteOptions:
 - leafletArmor
 - losPolloHermanos
 - lowLightStrength
-- marryPlayers
-- maxMiningFortune
 - newDayNewEffect
 - noEnchantArmor
 - noEnchantAxe
@@ -82,7 +79,6 @@ allOfTheCompleteOptions:
 - presidentForceFieldPowers
 - presidentkeepInvPowers
 - presidentKickPowers
-- presidentMiliaryPowers
 - presidentOverrideElectionsPowers
 - presidentSearchPowers
 - presidentTeleportPowers
