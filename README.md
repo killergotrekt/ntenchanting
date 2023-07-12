@@ -20,7 +20,7 @@ An extension of NT Enchanting. Will not be under releases.
 - Plugin Vault 1.7.3
 
 ## Features
-- 104 Changes: Spice up your gameplay with *democracy*.
+- 95 Changes: Spice up your gameplay with *democracy*.
 
 ## Credits
 | Rule  | Source |
