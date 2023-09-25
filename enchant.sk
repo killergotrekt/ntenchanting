@@ -1,0 +1,276 @@
+options:
+	prefix: jimpcraft
+
+on load:
+	delete {lastviewpower::%player%}
+
+on right click on enchanting table:
+	cancel event
+	{prompt::%player%} = "renameitem":
+		delete {prompt::%player%} 
+		give player {enchantslotstorage::%player%} 
+		delete {enchantslotstorage::%player%}
+	loop all blocks in radius 2.5 around event-block:
+		if loop-block contains bookshelf:
+			add 1 to {_power}
+	set {lastviewpower::%player%} to {_power}
+	enchanter(player, {_power})
+
+function enchanter(p: player, power: number):
+	delete {enchantslotstorage::%{_p}%}
+	open chest inventory with 6 rows named "Enchanter" to {_p}
+	set slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 17, 18, 19, 20, 26, 27, 29, 35, 36, 38, 44, 45, 46, 47, 48, 49, 50, 51, 52, and 53 of {_p}'s current inventory to black stained glass pane named "&r"
+	set slot 10 of {_p}'s current inventory to any button named "&aInsert Item" with lore "&7Click the item in your%nl%&7inventory that you want%nl%&7enchanted."
+	set slot 37 of {_p}'s current inventory to bookshelf named "&dBookshelves: &f%{lastviewpower::%{_p}%}+0%" with lore "%nl%&7Higher number, more%nl%&7enchantments avaliable.%nl%%nl%&8HINT: Bookshelves should%nl%&8be surrounding this table!"
+	refreshEnchants({_p}, slot 10 of {_p}'s current inventory, {_power})
+	
+function refreshEnchants(p: player, i: item, power: integer):
+	{_i} = any button:
+		set slot 28 of {_p}'s current inventory to black stained glass pane named "&r"
+		set slot 12, 13, 14, 15, 16, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 39, 40, 41, 42, and 43 of {_p}'s current inventory to gray stained glass pane named "&r"
+	else:
+		set {_power} to {_power}+0
+		{_power} >= 10:
+			set slot 28 of {_p}'s current inventory to glowing nametag named "&aPower Rename" with lore "&7Renaming, easy!%nl%%nl%&7Costs:%nl%&8| &e2 exp levels%nl%&8| &91 lapis lazuli"
+		else:
+			set slot 28 of {_p}'s current inventory to nametag named "&7Power Rename" with lore "&cLOCKED &8(+%10-{_power}%)"
+		{_i} = any pickaxe or any shovel or any hoe or any axe:
+			setupEnchanterItem({_p}, {_power}, 12, "Efficiency", 0, 5, 3, 1.3, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 13, "Fortune", 2, 3, 4, 1.5, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 14, "Mending", 3, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 15, "Unbreaking", 5, 3, 3, 2.2, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 16, "Silk Touch", 6, 1, 6, 2.2, 3, 3)
+			{_i} = any axe:
+				setupEnchanterItem({_p}, {_power}, 21, "Sharpness", 6, 5, 3, 1.5, 2, 1.25)
+				setupEnchanterItem({_p}, {_power}, 22, "Smite", 7, 5, 3, 1.5, 2, 1.25)
+				setupEnchanterItem({_p}, {_power}, 23, "Bane of Arthropods", 7, 5, 3, 1.5, 2, 1.25)
+		{_i} = (flint and steel) or brush or shield or shears or elytra:
+			setupEnchanterItem({_p}, {_power}, 12, "Mending", 3, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 13, "Unbreaking", 5, 3, 3, 2.2, 1, 1)
+			{_i} = shears:
+				setupEnchanterItem({_p}, {_power}, 14, "Efficiency", 0, 5, 3, 1.3, 1, 1)
+		{_i} = crossbow:
+			setupEnchanterItem({_p}, {_power}, 12, "Quick Charge", 3, 3, 3, 1.66, 2, 1)
+			setupEnchanterItem({_p}, {_power}, 13, "Piercing", 2, 4, 4, 1.66, 2, 1)
+			setupEnchanterItem({_p}, {_power}, 14, "Mending", 3, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 15, "Unbreaking", 5, 3, 3, 2.2, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 16, "Multishot", 7, 1, 6, 2.2, 4, 4)
+		{_i} = fishing rod:
+			setupEnchanterItem({_p}, {_power}, 12, "Lure", 1, 3, 3, 1.783, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 13, "Mending", 3, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 14, "Unbreaking", 5, 3, 3, 2.2, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 15, "Luck of the Sea", 1, 3, 3, 1.783, 1, 1)
+		{_i} = any sword:
+			setupEnchanterItem({_p}, {_power}, 12, "Sharpness", 1, 5, 3, 1.5, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 13, "Smite", 2, 5, 3, 1.5, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 14, "Bane of Arthropods", 2, 5, 3, 1.5, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 15, "Sweeping Edge", 3, 3, 5, 1.22, 2, 1.66)
+			setupEnchanterItem({_p}, {_power}, 16, "Mending", 4, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 21, "Unbreaking", 5, 3, 3, 2.2, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 22, "Fire Aspect", 6, 2, 3, 2, 2, 2)
+			setupEnchanterItem({_p}, {_power}, 23, "Knockback", 8, 2, 3, 2, 2, 2)
+			setupEnchanterItem({_p}, {_power}, 24, "Looting", 10, 3, 4, 1.25, 3, 1.5)
+		"%{_i}%" = "bow":
+			setupEnchanterItem({_p}, {_power}, 12, "Power", 0, 5, 3, 1.5, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 13, "Punch", 1, 2, 2, 2, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 14, "Mending", 3, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 15, "Unbreaking", 4, 3, 3, 2.2, 1, 1)
+			setupEnchanterItem({_p}, {_power}, 16, "Flame", 6, 1, 6, 1, 3, 1)
+			setupEnchanterItem({_p}, {_power}, 21, "Infinity", 8, 1, 6, 1, 3, 1)
+		{_i} = any helmet or any chestplate or any leggings or any boots or turtle helmet:
+			setupEnchanterItem({_p}, {_power}, 12, "Protection", 0, 4, 3, 1.5, 2, 1.25)
+			setupEnchanterItem({_p}, {_power}, 13, "Blast Protection", 1, 4, 3, 1.5, 2, 1.5)
+			setupEnchanterItem({_p}, {_power}, 14, "Projectile Protection", 1, 4, 3, 1.5, 2, 1.5)
+			setupEnchanterItem({_p}, {_power}, 15, "Fire Protection", 1, 4, 3, 1.5, 2, 1.5)
+			setupEnchanterItem({_p}, {_power}, 16, "Thorns", 3, 3, 3, 2.5, 2, 2)
+			setupEnchanterItem({_p}, {_power}, 21, "Mending", 4, 1, 6, 1.5, 3, 3)
+			setupEnchanterItem({_p}, {_power}, 22, "Unbreaking", 6, 3, 3, 2.2, 1, 1)
+			{_i} = any helmet:
+				setupEnchanterItem({_p}, {_power}, 23, "Aqua Affinity", 6, 1, 3, 1.5, 3, 3)
+				setupEnchanterItem({_p}, {_power}, 24, "Respiration", 6, 3, 2, 1.5, 1, 3)
+			{_i} = any leggings:
+				setupEnchanterItem({_p}, {_power}, 23, "Swift Sneak", 6, 3, 2, 1.5, 1, 1.5)
+			{_i} = any boots:
+				setupEnchanterItem({_p}, {_power}, 23, "Feather Falling", 6, 4, 3, 1.5, 2, 1.25)
+				setupEnchanterItem({_p}, {_power}, 24, "Soul Speed", 7, 3, 2, 1.5, 1, 1.5)
+				setupEnchanterItem({_p}, {_power}, 25, "Frost Walker", 7, 1, 5, 1, 3, 1)
+				setupEnchanterItem({_p}, {_power}, 30, "Depth Strider", 7, 3, 2, 2, 2, 2)
+
+on inventory close:
+	if name of event-inventory contains "Enchanter":
+		{prompt::%player%} is not "renameitem"
+		slot 10 of player's current inventory is not any button:
+			{enchantslotstorage::%player%} is set
+			give player {enchantslotstorage::%player%} 
+
+on inventory click:
+	if name of event-inventory = "Enchanter":
+		cancel event
+		event-inventory is inventory of player:
+			event-slot is not air:
+				slot 10 of player's current inventory is not any button:
+					send "&cTake that item out first!"
+					stop
+				set {enchantslotstorage::%player%} to event-slot
+				set slot 10 of player's current inventory to event-slot with lore "%nl%&eClick to get back!" with attributes flag hidden
+				set event-slot to air
+				refreshEnchants(player, slot 10 of player's current inventory, {lastviewpower::%player%})
+		else:
+			event-slot = 10:
+				event-slot is not any button:
+					give player {enchantslotstorage::%player%}
+					set slot 10 of player's current inventory to any button named "&aInsert Item" with lore "&7Click the item in your%nl%&7inventory that you want%nl%&7enchanted."
+					refreshEnchants(player, slot 10 of player's current inventory, {lastviewpower::%player%})
+			else if event-slot = 28:
+				name of event-slot = "&aPower Rename":
+					checkEnchanter(player, 2, 1) = true
+					set {prompt::%player%} to "renameitem"
+					close player's inventory
+					if player have permission "tags.2":
+						send "&aRename your item in chat.%nl%&a&n<link:https://htmlcolorcodes.com/bukkit-color-codes/>Color codes are accepted (click to learn more)&a.%nl%&aLength < 10 chars, recommended alphanumeric.%nl%&aType ""none"" to cancel."
+					else:
+						send "&aRename your item in chat.%nl%&aLength < 10 chars%nl%&aType ""none"" to cancel."
+			else:
+				event-slot = enchanted book
+				set {_nbt} to nbt compound of event-slot
+				set {_slotnumber} to index of event-slot
+				set {_locked} to tag "tag;lockedUI" of nbt compound of slot {_slotnumber} of player's current inventory
+				{_locked} is not set
+				set {_enchantment.name} to tag "tag;enchantUI" of nbt compound of slot {_slotnumber} of player's current inventory
+				set {_enchantment.lvl} to tag "tag;levelUI" of nbt compound of slot {_slotnumber} of player's current inventory
+				set {_enchantment.lapiscost} to tag "tag;lapisUI" of nbt compound of slot {_slotnumber} of player's current inventory
+				set {_enchantment.xplvlcost} to tag "tag;expUI" of nbt compound of slot {_slotnumber} of player's current inventory
+				checkEnchanter(player, {_enchantment.xplvlcost}, {_enchantment.lapiscost}) = true
+				removeItemsEnchanter(player, {_enchantment.xplvlcost}, {_enchantment.lapiscost})
+				enchant slot 10 of player's current inventory with "%{_enchantment.name}% %{_enchantment.lvl}%" parsed as enchantment type
+				enchant {enchantslotstorage::%player%} with "%{_enchantment.name}% %{_enchantment.lvl}%" parsed as enchantment type
+				refreshEnchants(player, slot 10 of player's current inventory, {lastviewpower::%player%})
+				play sound "block.enchantment_table.use" at volume 3 at pitch 1 to {_p}
+				send "&aSuccessfully added &e%{_enchantment.name}% %roman numeral of {_enchantment.lvl}% &aas an enchant!"
+
+on quit:
+	{enchantslotstorage::%player%} is set:
+		give player {enchantslotstorage::%player%} 
+		delete {enchantslotstorage::%player%}
+
+chat:
+	{prompt::%player%} = "renameitem":
+		delete {prompt::%player%}
+		cancel event
+		set {_x} to uncolored message
+		length of {_x} > 10:
+			send "&cThe name is too long!%nl%&cAccepted: 10, Input: %length of {_x}%"
+			give player {enchantslotstorage::%player%}
+			stop
+		{_x} = """none""" or "none" or "cancel":
+			send "&aCanceled!"
+			give player {enchantslotstorage::%player%}
+			stop
+		replace all "[" in {_x} with ""
+		replace all "]" in {_x} with ""
+		replace all "!" in {_x} with ""
+		replace all "(" in {_x} with ""
+		replace all ")" in {_x} with ""
+		replace all " " in {_x} with ""
+		{_x} isn't alphanumeric:
+			send "&cThe name contains illegal char!%nl%&cAccepted: A-z,0-9,[]"
+			give player {enchantslotstorage::%player%}
+			stop
+		if player have permission "tags.2":
+			set name of {enchantslotstorage::%player%} to colored message
+		else:
+			set name of {enchantslotstorage::%player%} to {_x}
+		set {_x} to nbt compound of {enchantslotstorage::%player%}
+		checkEnchanter(player, 2, 1) = true
+		removeItemsEnchanter(player, 2, 1)
+		give player {enchantslotstorage::%player%}
+		send "&aRenamed!"
+
+function checkEnchanter(p: player, lvl: integer, lapis: integer) :: boolean:
+	if level of {_p} is less than {_lvl}:
+		send "&cNot enough lapis/levels!" to {_p}
+		return false
+	else if amount of lapis lazuli in {_p}'s inventory is less than {_lapis}:
+		send "&cNot enough lapis/levels!" to {_p}
+		return false
+	else:
+		return true
+
+function removeItemsEnchanter(p: player, lvl: integer, lapis: integer):
+	remove {_lapis} of lapis lazuli from {_p}'s inventory
+	reduce {_p}'s level by {_lvl}
+
+function setupEnchanterItem(p: player, bookshelves: number, slot: number, e: text, power: integer, max: integer, baseLvl: number, expLvl: number, baseLapis: number, expLapis: number):
+	set {_enchant} to {_e} parsed as enchantment
+	set {_level} to level of {_enchant} of slot 10 of {_p}'s current inventory
+	set {_enchantBook} to enchanted book
+	set {_nbt} to nbt compound of {_enchantBook}
+	set tag "tag;enchantUI" of {_nbt} to "%{_enchant}%"
+	set tag "tag;levelUI" of {_nbt} to {_level}+1
+	set tag "tag;expUI" of {_nbt} to round(({_expLvl}*{_level})+{_baseLvl})
+	set tag "tag;lapisUI" of {_nbt} to round(({_expLapis}*{_level})+{_baseLapis})
+	{_power} > {_bookshelves}:
+		set tag "tag;lockedUI" of {_nbt} to true
+		set name of {_enchantbook} to "&7%{_enchant}%"
+		set lore of {_enchantbook} to "&cLOCKED &8(+%{_power}-{lastviewpower::%{_p}%}%)"
+	else if {_level} is not set:
+		set name of {_enchantbook} to "&a%{_enchant}% %roman numeral of ({_level}+1)%"
+		set lore of {_enchantbook} to "%nl%&7Upgrade from:%nl%&8| &c%{_enchant}% ✘%nl%%nl%&7Costs:%nl%&8| &e%round(({_expLvl}*{_level})+{_baseLvl})% xp levels%nl%&8| &9%round(({_expLapis}*{_level})+{_baseLapis})% lapis lazuli"
+	else:
+		{_level} >= {_max}:
+			set tag "tag;lockedUI" of {_nbt} to true
+			set name of {_enchantbook} to "&b%{_enchant}% %roman numeral of ({_max})% ✔"
+			set lore of {_enchantbook} to "%nl%&7Cannot upgrade further%nl%&8| &6Max level reached!%nl%&r"
+		else:
+			set name of {_enchantbook} to "&a%{_enchant}% %roman numeral of ({_level}+1)%"
+			set lore of {_enchantbook} to "%nl%&7Upgrade from:%nl%&8| &a%{_enchant}% %roman numeral of {_level}% ✔%nl%%nl%&7Costs:%nl%&8| &e%round(({_expLvl}*{_level})+{_baseLvl})% xp levels%nl%&8| &9%round(({_expLapis}*{_level})+{_baseLapis})% lapis lazuli"
+	level of fortune of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Silk Touch"
+		set {_invalidEnchantment} to true
+	else if level of silk touch of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Fortune"
+		set {_invalidEnchantment} to true
+	if level of piercing of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Multishot"
+		set {_invalidEnchantment} to true
+	else if level of Multishot of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Piercing"
+		set {_invalidEnchantment} to true
+	if level of Sharpness of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Bane of Arthropods" or "Smite"
+		set {_invalidEnchantment} to true
+	else if level of Bane of Arthropods of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Sharpness" or "Smite"
+		set {_invalidEnchantment} to true
+	else if level of Smite of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Sharpness" or "Bane of Arthropods"
+		set {_invalidEnchantment} to true
+	if level of Infinity of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Mending"
+		set {_invalidEnchantment} to true
+	else if level of Mending of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Infinity"
+		set {_invalidEnchantment} to true
+	if level of Protection of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Blast Protection" or "Projectile Protection" or "Fire Protection"
+		set {_invalidEnchantment} to true
+	else if level of Blast Protection of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Protection" or "Projectile Protection" or "Fire Protection"
+		set {_invalidEnchantment} to true
+	else if level of Projectile Protection of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Protection" or "Blast Protection" or "Fire Protection"
+		set {_invalidEnchantment} to true
+	else if level of Fire Protection of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Protection" or "Blast Protection" or "Projectile Protection"
+		set {_invalidEnchantment} to true
+	level of depth strider of slot 10 of {_p}'s current inventory is set:
+		{_e} = "Frost Walker"
+		set {_invalidEnchantment} to true
+	else if level of Frost Walker of slot 10 of {_p}'s current inventory is set:
+		{_e} = "depth strider"
+		set {_invalidEnchantment} to true
+	{_invalidEnchantment} is set:
+		set tag "tag;lockedUI" of {_nbt} to true
+		set name of {_enchantbook} to "&c%{_enchant}% ✘"
+		set lore of {_enchantbook} to "%nl%&7Cannot upgrade further%nl%&8| &6Conflicted enchant!%nl%&r"
+	set slot {_slot} of {_p}'s current inventory to {_enchantbook}
