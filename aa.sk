@@ -1,0 +1,224 @@
+options:
+	advancedAnvilScreen: Advanced Anvil
+	prefix: jimpcraft
+	preventDupedBooks: true
+	allowCombiningBooks: true
+	
+on right click on anvil:
+	player isn't sneaking
+	cancel event
+	open chest inventory with 6 rows to player
+	advancedAnvilUI(player)
+	
+function advancedAnvilUI(p: player):
+	set name of {_p}'s current inventory to "{@advancedAnvilScreen}"
+	set slot 16 and 31 of {_p}'s current inventory to air
+	set slot 10 and 16 of {_p}'s current inventory to air
+	set slot 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 45, 46, 47, 48, 49, 50, 51, 52 and 53 of {_p}'s current inventory to black stained glass pane named "&r"
+	set slot 19 of {_p}'s current inventory to cyan stained glass pane named "&bUpgrade Item Above" with lore "%nl%&7Accepted:%nl%&9Armor, Swords, Bows,%nL%&9Tools, Shield, Fishing Rod,%nl%&9Elytra, Shears, Trident,%nl%&9Flint and Steel, &5Magical%nl%&5Enchanted Book%nl%%nl%&8Pickaxes, axes, shovels,%nl%&8and hoes are tools!"
+	set slot 25 of {_p}'s current inventory to magenta stained glass pane named "&dSacrifice Item Above" with lore "%nl%&7Accepted:%nl%&5Magical Enchanted Book%nl%%nl%&8HINT: To enchant an item with%nl%&8Magical Book, item must already%nl%&8have previous level of%nl%&8enchantment.%nl%%nL%&8e.g - Sharpness VI requires%nl%&8Sharpness V enchanted.%nl%&8'Super' variant bypasses this."
+	set slot 11, 12, 13, 14, 15, 21, 22, 23, 24, 28, 29, 30, 32, 33, 34, 37, 38, 39, 40, 41, 42, and 43 of {_p}'s current inventory to gray stained glass pane named "&a"
+	set slot 20 and 21 of {_p}'s current inventory to blue stained glass pane named "&bUpgrade Item Process" with lore "&7When ready, click on%nl%&7anvil in the center."
+	set slot 23 and 24 of {_p}'s current inventory to purple stained glass pane named "&dSacrifice Item Process" with lore "&7When ready, click on%nl%&7anvil in the center."
+	set slot 40 of {_p}'s current inventory to lime stained glass pane named "&aCombination Result Above" with lore "%nl%&7When Upgrade + Sacrifice is%nl%&7combined together.%nl%%nl%&8Do not attempt to place items here."
+	set slot 22 of {_p}'s current inventory to anvil named "&6Combine Items" with lore "%nl%&7Combine Upgrade Item and%nl%&7Sacrificed Item together.%nl%&7Will require lapis/xp.%nl%%nl%&eLeft-click &fto combine.%nl%&eRight-click &fto see price."
+	set slot 53 of {_p}'s current inventory to green stained glass pane named "&2Tip: Vanilla Anvil UI" with lore "%nl%&8Right-click while sneaking%nl%&8to open old Vanilla Anvil GUI."
+	
+command magicalBookGive [<text>] [<number>] [<text>]:
+	permission: op
+	prefix: {@prefix}
+	usage: arg-1 can also be: list, nbthand, clearall with code 3786
+	trigger:
+		arg-1 or arg-2 is not set:
+			send "missing arguments"
+		else if arg-1 = "list":
+			send "%{bannedBookID::*}%"
+			stop
+		else if arg-1 = "nbthand":
+			send "%nbt of player's tool%"
+			stop
+		else if arg-1 = "ciearall":
+			arg-2 = 3786
+			delete {bannedBookID::*}
+			stop
+		else:
+			set {_arg1} to arg-1
+			replace all "_" in {_arg1} with " "
+			magicalBook(player, {_arg1}, arg-2, arg-3)
+
+function magicalBook(p: player, 1: text, 2: number, flags: text):
+		set {_enchantBook} to enchanted book
+		set {_n} to nbt compound of {_enchantBook}
+		set tag "tag;EnchantName" of {_n} to {_1}
+		set tag "tag;EnchantLevel" of {_n} to {_2}
+		set tag "tag;uniqueID" of {_n} to random 16 char string from `a-Z0-9`
+		set tag "tag;Verified" of {_n} to 1
+		set tag "tag;costMultiplier" of {_n} to 1
+		set {_a} to tag "tag;EnchantName" of nbt compound of {_enchantBook}
+		set {_b} to tag "tag;EnchantLevel" of nbt compound of {_enchantBook}
+		set {_c} to tag "tag;Verified" of nbt compound of {_enchantBook}
+		set {_d} to tag "tag;uniqueID" of nbt compound of {_enchantBook}
+		{_flags} contains "publicCreate":
+				broadcast "&dA special enchantment book, &f%{_a}% %roman numeral of {_b}% &dwas created for &f%{_p}%&d.%nl%&8Unique ID: %{_d}%"
+		{_flags} contains "publicDrop":
+				broadcast "&dA special enchantment book, &f%{_a}% %roman numeral of {_b}% &dwas dropped by &f%{_p}%&d.%nl%&8Unique ID: %{_d}%"
+		{_flags} contains "doubleCost":
+				send "&a&oAdministrator Bonus: Multiplier Cost Set to 2x." to {_p}
+				set tag "tag;costMultiplier" of {_n} to 2
+		{_flags} contains "noCost":
+				send "&a&oAdministrator Bonus: Multiplier Cost Set to 0x." to {_p}
+				set tag "tag;costMultiplier" of {_n} to 0
+		{_flags} contains "superEdition":
+				send "&a&oAdministrator Bonus: Will not require previous level enchantment due to super status." to {_p}
+				set tag "tag;SuperchargedBook" of {_n} to 1
+				give {_p} {_enchantBook} named "&5Super Magical Enchanted Book" with lore "&7%{_a}% %roman numeral of {_b}%"
+		else:
+				give {_p} {_enchantBook} named "&5Magical Enchanted Book" with lore "&7%{_a}% %roman numeral of {_b}%"
+	
+on inventory click:
+	name of event-inventory = "Repair & Name":
+		name of event-slot = "&5Magical Enchanted Book"
+		cancel event
+		send "&cYou cannot use &5Magical Enchanted Book &cin this anvil!"
+	name of event-inventory = "Repair & Disenchant":
+		name of event-slot = "&5Magical Enchanted Book"
+		cancel event
+	if name of event-inventory is "{@advancedAnvilScreen}":
+		"%click type%" contains "with shift":
+			event-slot is not 10
+			send "&cShift clicking is disabled!"
+			cancel event
+		loop all blocks in radius 2.5 around player's target block:
+			if loop-block contains bookshelf:
+				add 1 to {_power}
+		event-slot = 31:
+			event-inventory is not inventory of player
+			event-slot is not air
+			give player slot 31 of player's current inventory
+			set slot 31 of player's current inventory to air
+		event-slot is 10 or 16:
+			event-inventory is not inventory of player
+		else:
+			event-inventory is not inventory of player
+			cancel event
+			event-slot is 22:
+				slot 16 of player's current inventory is air:
+					close player's inventory
+					send "&cUpgrade/Sacrifice item slot is empty."
+					stop
+				slot 10 of player's current inventory is air:
+					close player's inventory
+					send "&cUpgrade/Sacrifice item slot is empty."
+					stop
+				set {_verifiedBook} to tag "tag;Verified" of nbt compound of slot 10 of player's current inventory
+				set {_verifiedBook2} to tag "tag;Verified" of nbt compound of slot 16 of player's current inventory
+				{_verifiedBook2} is not 1:
+					close player's inventory
+					send "&cIn Sacrifice item slot, item is not valid &5Magical Enchanted Book&c."
+					stop
+				set {_costMultiplier} to tag "tag;costMultiplier" of nbt compound of slot 16 of player's current inventory
+				set {_enchantLevel} to tag "tag;EnchantLevel" of nbt compound of slot 16 of player's current inventory
+				set {_bypassPrevLvl} to tag "tag;SuperchargedBook" of nbt compound of slot 16 of player's current inventory
+				set {_ID} to tag "tag;uniqueID" of nbt compound of slot 16 of player's current inventory
+				set {_xpCost} to floor(log({_enchantLevel}, 1.2)+3)*{_costMultiplier}
+				set {_lapisCost} to round((({_enchantLevel}^1.8)*0.9)/2)*{_costMultiplier}
+				{_lapisCost} > 2176:
+					set {_lapisCost} to 2176
+				set {_enchantName} to tag "tag;EnchantName" of nbt compound of slot 16 of player's current inventory
+				set {_enchantName2} to tag "tag;EnchantName" of nbt compound of slot 10 of player's current inventory
+				set {_enchantNameCheck} to {_enchantName} parsed as enchantment
+				"%click type%" contains "right":
+					{_verifiedBook} is 1:
+						{_verifiedBook2} is 1
+						"{@allowCombiningBooks}" = "true"
+						send "&eCost to apply this book: &3%{_xpCost}*0% levels&e, &9%{_lapisCost}*0% lapis lazuli%nl%&eTo confirm combination, left-click again."
+						stop
+					send "&eCost to apply this book: &3%{_xpCost}% levels&e, &9%{_lapisCost}% lapis lazuli%nl%&eTo confirm combination, left-click again."
+					stop
+				"%click type%" contains "left":
+					{_verifiedBook} is 1:
+						"{@allowCombiningBooks}" is not "true":
+							send "&cCombining &5Magical Enchanted Books&c is not allowed!"
+							stop
+						slot 31 of player's current inventory is not air:
+							stop
+						set {_ID2} to tag "tag;uniqueID" of nbt compound of slot 10 of player's current inventory
+						"{@preventDupedBooks}" = "true":
+							{_ID2} = {_ID}:
+								set slot 16 of player's current inventory to air
+								add 1 to {_dead}
+							"%{bannedBookID::*}%" contains {_ID}:
+								set slot 16 of player's current inventory to air
+								add 1 to {_dead}
+							"%{bannedBookID::*}%" contains {_ID2}:
+								set slot 10 of player's current inventory to air
+								add 1 to {_dead}
+							{_dead} is set:
+								wait 5 ticks
+								ban player due to "Suspicious Activity%nl%Handler(s): &c%{_ID}% &fand &c%{_ID2}%"
+								kick player due to "An error occurred. Please rejoin."
+								stop
+						set {_enchantLevel2} to tag "tag;EnchantLevel" of nbt compound of slot 10 of player's current inventory
+						{_enchantLevel2} > {_enchantLevel}:
+							send "&cYou can only combine books with same enchantment, and same/higher level."
+							stop
+						{_enchantName} is not {_enchantName2}:
+							send "&cYou can only combine books with same enchantment, and same/higher level."
+							stop
+						set {_flags} to ""
+						{_bypassPrevLvl} is 1:
+							set {_flags} to "%{_flags}%,superEdition,"
+						{_costMultiplier} is 2:
+							set {_flags} to "%{_flags}%,doubleCost,"
+						{_costMultiplier} is 0:
+							set {_flags} to "%{_flags}%,noCost,"
+						magicalBook(player, {_enchantName}, {_enchantLevel2}+1, {_flags})
+						play sound "block.anvil.use" at volume 2 at pitch 1 to player
+						set slot 10 and 16 of player's current inventory to air
+						stop
+					{_bypassPrevLvl} is not 1:
+						set {_current} to level of {_enchantNameCheck} of slot 10 of player's current inventory
+						if {_current} is not {_enchantlevel}-1:
+							{_current} is not set:
+								send "&cThis enchantment requires %{_enchantName}% %roman numeral of {_enchantlevel}-1%, but currently it has no level of %{_enchantName}%" to player
+								stop
+							send "&cThis enchantment requires %{_enchantName}% %roman numeral of {_enchantlevel}-1%, but currently it has %{_enchantName}% %roman numeral of {_current}%" to player
+							stop
+					{_bypassPrevLvl} is 1:
+						set {_current} to level of {_enchantNameCheck} of slot 10 of player's current inventory
+						if {_current} is not greater than or equal to 1:
+							{_current} is not set:
+								send "&cThis enchantment requires %{_enchantName}% I, but currently it has no level of %{_enchantName}%" to player
+								stop
+					if amount of lapis lazuli in player's inventory is less than {_lapisCost}:
+						send "&cNot enough lapis lazuli or levels!" to player
+						stop
+					if level of player is less than {_enchantLevel}:
+						send "&cNot enough lapis lazuli or levels!" to player
+						stop
+					"%{bannedBookID::*}%" contains "%{_id}%":
+						"{@preventDupedBooks}" = "true"
+						set slot 16 of player's current inventory to air
+						wait 5 ticks
+						ban player due to "Suspicious Activity%nl%Handler(s): &c%{_id}%"
+						kick player due to "An error occurred. Please rejoin."
+						stop
+					remove {_lapisCost} of lapis lazuli from player's inventory
+					reduce player's level by {_xpCost}
+					add {_id} to {bannedBookID::*}
+					set {_item} to slot 10 of player's current inventory
+					enchant {_item} with ("%{_enchantName}% %{_enchantlevel}%" parsed as enchantment type)
+					set slot 10 and 16 of player's current inventory to air
+					wait 2 ticks
+					set slot 31 of player's current inventory to {_item}
+					play sound "block.anvil.use" at volume 2 at pitch 0.9 to player
+
+on inventory close:
+	if name of event-inventory is "{@enchantingMenuScreen}" or "{@advancedAnvilScreen}":
+		set {_item1} to slot 10 of player's current inventory
+		give {_item1} to player
+		if name of event-inventory is "{@advancedAnvilScreen}":
+			set {_item2} to slot 16 of player's current inventory
+			give {_item2} to player
+			set {_item3} to slot 31 of player's current inventory
+			give {_item3} to player
